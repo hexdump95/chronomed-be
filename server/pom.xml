@@ -60,6 +60,11 @@
 
         <dependency>
             <groupId>ar.sergiovillanueva</groupId>
+            <artifactId>catalog</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>ar.sergiovillanueva</groupId>
             <artifactId>users</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>

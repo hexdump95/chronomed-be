@@ -1,6 +1,7 @@
 package ar.sergiovillanueva.chronomed.service;
 
 import ar.sergiovillanueva.chronomed.dto.PageResponse;
+import ar.sergiovillanueva.chronomed.dto.SpecialtyRequest;
 import ar.sergiovillanueva.chronomed.dto.SpecialtyResponse;
 import ar.sergiovillanueva.chronomed.mapper.SpecialtyMapper;
 import ar.sergiovillanueva.chronomed.repository.SpecialtyRepository;
@@ -42,4 +43,11 @@ public class SpecialtyServiceImpl implements SpecialtyService {
                 .build();
     }
 
+    @Override
+    @Transactional
+    public SpecialtyResponse save(SpecialtyRequest request) {
+        var specialty = SpecialtyMapper.toEntity(request);
+        specialty = specialtyRepository.save(specialty);
+        return SpecialtyMapper.toDto(specialty);
+    }
 }

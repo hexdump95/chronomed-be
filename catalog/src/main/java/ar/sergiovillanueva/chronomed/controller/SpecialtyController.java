@@ -1,6 +1,7 @@
 package ar.sergiovillanueva.chronomed.controller;
 
 import ar.sergiovillanueva.chronomed.dto.PageResponse;
+import ar.sergiovillanueva.chronomed.dto.SpecialtyRequest;
 import ar.sergiovillanueva.chronomed.dto.SpecialtyResponse;
 import ar.sergiovillanueva.chronomed.service.SpecialtyService;
 import org.slf4j.Logger;
@@ -24,6 +25,12 @@ public class SpecialtyController {
     ) {
         log.debug("GET request to getSpecialties");
         return specialtyService.findAll(name, page);
+    }
+
+    @PostMapping
+    public SpecialtyResponse createSpecialty(@RequestBody SpecialtyRequest specialty) {
+        log.debug("POST request to createSpecialty");
+        return specialtyService.save(specialty);
     }
 
 }

@@ -9,5 +9,6 @@ public interface SpecialtyService {
     PageResponse<SpecialtyResponse> findAll(String name, int page);
     SpecialtyDetailResponse findOne(Long id);
     SpecialtyResponse save(SpecialtyRequest request);
-    SpecialtyResponse update(Long id, SpecialtyRequest request) throws Exception;
+    SpecialtyResponse update(Long id, SpecialtyRequest request);
+    void delete(Long id);
 }

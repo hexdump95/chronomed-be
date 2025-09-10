@@ -14,6 +14,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+
 @Service
 public class SpecialtyServiceImpl implements SpecialtyService {
     private final Logger log = LoggerFactory.getLogger(SpecialtyServiceImpl.class);
@@ -64,14 +66,27 @@ public class SpecialtyServiceImpl implements SpecialtyService {
 
     @Override
     @Transactional
-    public SpecialtyResponse update(Long id, SpecialtyRequest request) throws Exception {
+    public SpecialtyResponse update(Long id, SpecialtyRequest request) {
         log.debug("Update specialty with id: {} and specialty: {}", id, request);
         var specialty = specialtyRepository.findById(id)
-                .orElseThrow(() -> new Exception("Specialty with id: " + id + " not found"));
+                .orElseThrow(() -> new RuntimeException("Specialty with id: " + id + " not found"));
 
         specialty.setName(request.getName());
         specialty.setDescription(request.getDescription());
         specialtyRepository.save(specialty);
         return SpecialtyMapper.specialtyToSpecialtyResponse(specialty, new SpecialtyResponse());
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        log.debug("Delete specialty with id: {}", id);
+        var specialty = specialtyRepository.findById(id)
+                .orElseThrow(NotFoundServiceException::new);
+        if(specialty.getDeletedAt() != null) {
+            throw new RuntimeException();
+        }
+        specialty.setDeletedAt(Instant.now());
+        specialtyRepository.save(specialty);
     }
 }

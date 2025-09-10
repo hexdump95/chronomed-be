@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+
 @RestController
 @RequestMapping("/api/v1/specialties")
 public class SpecialtyController {
@@ -41,9 +43,10 @@ public class SpecialtyController {
     }
 
     @PostMapping
-    public SpecialtyResponse createSpecialty(@RequestBody SpecialtyRequest request) {
+    public ResponseEntity<SpecialtyResponse> createSpecialty(@RequestBody SpecialtyRequest request) {
         log.debug("POST request to createSpecialty");
-        return specialtyService.save(request);
+        var specialty = specialtyService.save(request);
+        return ResponseEntity.created(URI.create("/api/v1/specialties/" + specialty.getId())).body(specialty);
     }
 
     @PutMapping("/{id}")
@@ -51,6 +54,17 @@ public class SpecialtyController {
         log.debug("PUT request to updateSpecialty");
         try {
             return ResponseEntity.ok(specialtyService.update(id, request));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<SpecialtyResponse> deleteSpecialty(@PathVariable Long id) {
+        log.debug("DELETE request to deleteSpecialty with id {}", id);
+        try {
+            specialtyService.delete(id);
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }

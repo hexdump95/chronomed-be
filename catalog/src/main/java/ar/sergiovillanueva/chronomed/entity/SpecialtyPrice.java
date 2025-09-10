@@ -20,6 +20,9 @@ public class SpecialtyPrice extends BaseEntity {
     @Column(name = "price", nullable = false)
     private double price;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Specialty specialty;
+
     public Long getId() {
         return id;
     }
@@ -52,4 +55,11 @@ public class SpecialtyPrice extends BaseEntity {
         this.price = price;
     }
 
+    public Specialty getSpecialty() {
+        return specialty;
+    }
+
+    public void setSpecialty(Specialty specialty) {
+        this.specialty = specialty;
+    }
 }

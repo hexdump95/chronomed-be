@@ -1,8 +1,10 @@
 package ar.sergiovillanueva.chronomed.service;
 
 import ar.sergiovillanueva.chronomed.dto.PageResponse;
+import ar.sergiovillanueva.chronomed.dto.SpecialtyDetailResponse;
 import ar.sergiovillanueva.chronomed.dto.SpecialtyRequest;
 import ar.sergiovillanueva.chronomed.dto.SpecialtyResponse;
+import ar.sergiovillanueva.chronomed.entity.Specialty;
 import ar.sergiovillanueva.chronomed.mapper.SpecialtyMapper;
 import ar.sergiovillanueva.chronomed.repository.SpecialtyRepository;
 import ar.sergiovillanueva.chronomed.specification.SpecialtySpecification;
@@ -33,7 +35,7 @@ public class SpecialtyServiceImpl implements SpecialtyService {
 
         var pagedSpecialties = specialtyRepository
                 .findAll(specification, PageRequest.of(page, PAGE_SIZE))
-                .map(SpecialtyMapper::toDto);
+                .map(x -> SpecialtyMapper.specialtyToSpecialtyResponse(x, new SpecialtyResponse()));
 
         return new PageResponse.Builder<SpecialtyResponse>()
                 .items(pagedSpecialties.getContent())
@@ -44,10 +46,32 @@ public class SpecialtyServiceImpl implements SpecialtyService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public SpecialtyDetailResponse findOne(Long id) {
+        log.debug("Find specialty with id: {}", id);
+        var specialty = specialtyRepository.findById(id).orElseThrow(NotFoundServiceException::new);
+        return SpecialtyMapper.specialtyToSpecialtyDetailResponse(specialty, new SpecialtyDetailResponse());
+    }
+
+    @Override
     @Transactional
     public SpecialtyResponse save(SpecialtyRequest request) {
-        var specialty = SpecialtyMapper.toEntity(request);
-        specialty = specialtyRepository.save(specialty);
-        return SpecialtyMapper.toDto(specialty);
+        log.debug("Save specialty with specialty: {}", request);
+        var specialty = SpecialtyMapper.specialtyRequestToSpecialty(request, new Specialty());
+        specialtyRepository.save(specialty);
+        return SpecialtyMapper.specialtyToSpecialtyResponse(specialty, new SpecialtyResponse());
+    }
+
+    @Override
+    @Transactional
+    public SpecialtyResponse update(Long id, SpecialtyRequest request) throws Exception {
+        log.debug("Update specialty with id: {} and specialty: {}", id, request);
+        var specialty = specialtyRepository.findById(id)
+                .orElseThrow(() -> new Exception("Specialty with id: " + id + " not found"));
+
+        specialty.setName(request.getName());
+        specialty.setDescription(request.getDescription());
+        specialtyRepository.save(specialty);
+        return SpecialtyMapper.specialtyToSpecialtyResponse(specialty, new SpecialtyResponse());
     }
 }

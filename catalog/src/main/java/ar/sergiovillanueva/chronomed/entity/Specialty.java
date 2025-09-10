@@ -28,12 +28,7 @@ public class Specialty extends BaseEntity {
     @Column(name = "deleted_at")
     private Instant deletedAt;
 
-    @OneToMany(cascade =  CascadeType.ALL, orphanRemoval = true)
-    @JoinTable(
-            name = "specialty_specialty_price",
-            joinColumns = @JoinColumn(name = "specialty_id"),
-            inverseJoinColumns = @JoinColumn(name = "specialty_price_id")
-    )
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "specialty")
     private List<SpecialtyPrice> specialtyPrices = new ArrayList<>();
 
     @PrePersist

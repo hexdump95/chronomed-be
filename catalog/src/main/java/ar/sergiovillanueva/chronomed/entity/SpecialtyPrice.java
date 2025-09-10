@@ -8,7 +8,7 @@ import java.time.Instant;
 @Entity
 public class SpecialtyPrice extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Column(name = "valid_from", nullable = false)

@@ -8,7 +8,7 @@ import java.time.Instant;
 @Entity
 public class Comorbidity extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Short id;
 
     @Column(name = "name", nullable = false)

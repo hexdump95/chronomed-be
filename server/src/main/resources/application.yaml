@@ -14,3 +14,7 @@ spring:
 logging:
   level:
     ar.sergiovillanueva.chronomed: DEBUG
+
+springdoc:
+  swagger-ui:
+    path: /swagger

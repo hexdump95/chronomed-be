@@ -4,5 +4,5 @@ import ar.sergiovillanueva.chronomed.dto.PageResponse;
 import ar.sergiovillanueva.chronomed.dto.SpecialtyResponse;
 
 public interface SpecialtyService {
-    PageResponse<SpecialtyResponse> findAll(String query, int page);
+    PageResponse<SpecialtyResponse> findAll(String name, int page);
 }

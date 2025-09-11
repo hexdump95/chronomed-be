@@ -70,6 +70,11 @@
             <artifactId>hibernate-jpamodelgen</artifactId>
             <version>${hibernate-jpamodelgen.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-spatial</artifactId>
+            <version>7.1.0.Final</version>
+        </dependency>
     </dependencies>
 
     <build>

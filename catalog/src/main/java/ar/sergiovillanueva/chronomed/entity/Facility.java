@@ -1,6 +1,7 @@
 package ar.sergiovillanueva.chronomed.entity;
 
 import jakarta.persistence.*;
+import org.locationtech.jts.geom.Point;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -28,12 +29,7 @@ public class Facility extends BaseEntity {
     @Column(name = "phone")
     private String phone;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinTable(
-            name = "facility_room",
-            joinColumns = @JoinColumn(name = "facility_id"),
-            inverseJoinColumns = @JoinColumn(name = "room_id")
-    )
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "facility")
     private List<Room> rooms = new ArrayList<>();
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -44,6 +40,9 @@ public class Facility extends BaseEntity {
 
     @Column(name = "deleted_at")
     private Instant deletedAt;
+
+    @Column(name = "coordinates", columnDefinition = "geometry(Point, 4326)")
+    private Point coordinates;
 
     @Column(name = "locality_id")
     private Long localityId;
@@ -137,6 +136,14 @@ public class Facility extends BaseEntity {
 
     public void setDeletedAt(Instant deletedAt) {
         this.deletedAt = deletedAt;
+    }
+
+    public Point getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(Point coordinates) {
+        this.coordinates = coordinates;
     }
 
     public Long getLocalityId() {

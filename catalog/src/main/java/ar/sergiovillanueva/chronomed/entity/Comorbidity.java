@@ -9,7 +9,7 @@ import java.time.Instant;
 public class Comorbidity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Short id;
+    private Long id;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -37,11 +37,11 @@ public class Comorbidity extends BaseEntity {
         updatedAt = Instant.now();
     }
 
-    public Short getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Short id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

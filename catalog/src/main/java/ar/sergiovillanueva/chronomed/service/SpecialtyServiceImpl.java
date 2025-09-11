@@ -83,7 +83,7 @@ public class SpecialtyServiceImpl implements SpecialtyService {
         log.debug("Delete specialty with id: {}", id);
         var specialty = specialtyRepository.findById(id)
                 .orElseThrow(NotFoundServiceException::new);
-        if(specialty.getDeletedAt() != null) {
+        if (specialty.getDeletedAt() != null) {
             throw new RuntimeException();
         }
         specialty.setDeletedAt(Instant.now());

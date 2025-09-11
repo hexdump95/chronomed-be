@@ -59,7 +59,7 @@ public class ComorbidityController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ComorbidityResponse> deleteComorbidity(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteComorbidity(@PathVariable Long id) {
         log.debug("DELETE request to deleteComorbidity with id {}", id);
         try {
             comorbidityService.delete(id);

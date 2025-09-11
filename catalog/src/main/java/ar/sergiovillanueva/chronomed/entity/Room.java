@@ -2,6 +2,7 @@ package ar.sergiovillanueva.chronomed.entity;
 
 import jakarta.persistence.*;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +27,9 @@ public class Room extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Facility facility;
+
+    @Column(name = "deleted_at")
+    private Instant deletedAt;
 
     public Long getId() {
         return id;
@@ -65,5 +69,13 @@ public class Room extends BaseEntity {
 
     public void setFacility(Facility facility) {
         this.facility = facility;
+    }
+
+    public Instant getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(Instant deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

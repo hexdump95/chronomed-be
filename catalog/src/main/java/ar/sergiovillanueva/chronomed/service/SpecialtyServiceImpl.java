@@ -51,7 +51,8 @@ public class SpecialtyServiceImpl implements SpecialtyService {
     @Transactional(readOnly = true)
     public SpecialtyDetailResponse findOne(Long id) {
         log.debug("Find specialty with id: {}", id);
-        var specialty = specialtyRepository.findById(id).orElseThrow(NotFoundServiceException::new);
+        var specialty = specialtyRepository.findById(id)
+                .orElseThrow(() -> new NotFoundServiceException("Specialty with id: " + id + " not found"));
         return SpecialtyMapper.specialtyToSpecialtyDetailResponse(specialty, new SpecialtyDetailResponse());
     }
 
@@ -69,10 +70,9 @@ public class SpecialtyServiceImpl implements SpecialtyService {
     public SpecialtyResponse update(Long id, SpecialtyRequest request) {
         log.debug("Update specialty with id: {} and specialty: {}", id, request);
         var specialty = specialtyRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Specialty with id: " + id + " not found"));
+                .orElseThrow(() -> new NotFoundServiceException("Specialty with id: " + id + " not found"));
 
-        specialty.setName(request.getName());
-        specialty.setDescription(request.getDescription());
+        SpecialtyMapper.specialtyRequestToSpecialty(request, specialty);
         specialtyRepository.save(specialty);
         return SpecialtyMapper.specialtyToSpecialtyResponse(specialty, new SpecialtyResponse());
     }
@@ -82,7 +82,7 @@ public class SpecialtyServiceImpl implements SpecialtyService {
     public void delete(Long id) {
         log.debug("Delete specialty with id: {}", id);
         var specialty = specialtyRepository.findById(id)
-                .orElseThrow(NotFoundServiceException::new);
+                .orElseThrow(() -> new NotFoundServiceException("Specialty with id: " + id + " not found"));
         if (specialty.getDeletedAt() != null) {
             throw new RuntimeException();
         }

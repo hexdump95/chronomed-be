@@ -3,6 +3,7 @@ package ar.sergiovillanueva.chronomed.controller;
 import ar.sergiovillanueva.chronomed.dto.*;
 import ar.sergiovillanueva.chronomed.service.NotFoundServiceException;
 import ar.sergiovillanueva.chronomed.service.FacilityService;
+import ar.sergiovillanueva.chronomed.service.RoomService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +16,11 @@ import java.net.URI;
 public class FacilityController {
     private final Logger log = LoggerFactory.getLogger(FacilityController.class);
     private final FacilityService facilityService;
+    private final RoomService roomService;
 
-    public FacilityController(FacilityService facilityService) {
+    public FacilityController(FacilityService facilityService, RoomService roomService) {
         this.facilityService = facilityService;
+        this.roomService = roomService;
     }
 
     @GetMapping
@@ -57,10 +60,56 @@ public class FacilityController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<FacilityResponse> deleteFacility(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteFacility(@PathVariable Long id) {
         log.debug("DELETE request to deleteFacility with id {}", id);
         try {
             facilityService.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/{facilityId}/rooms")
+    public ResponseEntity<PageResponse<RoomResponse>> getRoomsByFacilityId(
+            @PathVariable Long facilityId,
+            @RequestParam(defaultValue = "0") int page
+    ) {
+        return ResponseEntity.ok(roomService.getRoomsByFacilityId(facilityId, page));
+    }
+
+    @PostMapping("/{facilityId}/rooms")
+    public ResponseEntity<RoomResponse> createRoomByFacilityId(@PathVariable Long facilityId, @RequestBody RoomRequest request) {
+        try {
+            var room = roomService.createRoomByFacilityId(facilityId, request);
+            return ResponseEntity.created(URI.create("/api/v1/facilities/rooms/" + room.getId())).body(room);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/rooms/{roomId}")
+    public ResponseEntity<RoomDetailResponse> getRoom(@PathVariable Long roomId) {
+        try {
+            return ResponseEntity.ok(roomService.getRoom(roomId));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/rooms/{roomId}")
+    public ResponseEntity<RoomResponse> updateRoom(@PathVariable Long roomId, @RequestBody RoomRequest request) {
+        try {
+            return ResponseEntity.ok(roomService.updateRoom(roomId, request));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @DeleteMapping("/rooms/{roomId}")
+    public ResponseEntity<Void> deleteRoom(@PathVariable Long roomId) {
+        try {
+            roomService.deleteRoom(roomId);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

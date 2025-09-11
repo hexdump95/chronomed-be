@@ -8,12 +8,9 @@ import ar.sergiovillanueva.chronomed.entity.Facility;
 import ar.sergiovillanueva.chronomed.mapper.FacilityMapper;
 import ar.sergiovillanueva.chronomed.repository.FacilityRepository;
 import ar.sergiovillanueva.chronomed.specification.FacilitySpecification;
-import org.locationtech.jts.geom.Coordinate;
-import org.locationtech.jts.geom.GeometryFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
-import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,7 +51,8 @@ public class FacilityServiceImpl implements FacilityService {
     @Transactional(readOnly = true)
     public FacilityDetailResponse findOne(Long id) {
         log.debug("Find facility with id: {}", id);
-        var facility = facilityRepository.findById(id).orElseThrow(NotFoundServiceException::new);
+        var facility = facilityRepository.findById(id)
+                .orElseThrow(() -> new NotFoundServiceException("Facility with id: " + id + " not found"));
         return FacilityMapper.facilityToFacilityDetailResponse(facility, new FacilityDetailResponse());
     }
 
@@ -72,10 +70,9 @@ public class FacilityServiceImpl implements FacilityService {
     public FacilityResponse update(Long id, FacilityRequest request) {
         log.debug("Update facility with id: {} and facility: {}", id, request);
         var facility = facilityRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Facility with id: " + id + " not found"));
+                .orElseThrow(() -> new NotFoundServiceException("Facility with id: " + id + " not found"));
 
-        facility.setName(request.getName());
-        facility.setDescription(request.getDescription());
+        FacilityMapper.facilityRequestToFacility(request, facility);
         facilityRepository.save(facility);
         return FacilityMapper.facilityToFacilityResponse(facility, new FacilityResponse());
     }
@@ -85,7 +82,7 @@ public class FacilityServiceImpl implements FacilityService {
     public void delete(Long id) {
         log.debug("Delete facility with id: {}", id);
         var facility = facilityRepository.findById(id)
-                .orElseThrow(NotFoundServiceException::new);
+                .orElseThrow(() -> new NotFoundServiceException("Facility with id: " + id + " not found"));
         if (facility.getDeletedAt() != null) {
             throw new RuntimeException();
         }

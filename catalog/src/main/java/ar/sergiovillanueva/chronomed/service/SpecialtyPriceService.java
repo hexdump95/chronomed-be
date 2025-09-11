@@ -5,4 +5,5 @@ import ar.sergiovillanueva.chronomed.dto.SpecialtyPriceResponse;
 
 public interface SpecialtyPriceService {
     SpecialtyPriceResponse save(Long specialtyId, SpecialtyPriceRequest request);
+    SpecialtyPriceResponse getSpecialtyPrice(Long id);
 }

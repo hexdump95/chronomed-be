@@ -8,6 +8,8 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -30,6 +32,12 @@ public class SpecialtyController {
             @RequestParam(defaultValue = "0") int page
     ) {
         log.debug("GET request to getSpecialties");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            log.info(authentication.getName());
+            log.info(authentication.getPrincipal().toString());
+            log.info(authentication.getCredentials().toString());
+        }
         return specialtyService.findAll(name, page);
     }
 
@@ -61,7 +69,7 @@ public class SpecialtyController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<SpecialtyResponse> deleteSpecialty(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteSpecialty(@PathVariable Long id) {
         log.debug("DELETE request to deleteSpecialty with id {}", id);
         try {
             specialtyService.delete(id);
@@ -77,8 +85,18 @@ public class SpecialtyController {
             @Valid @RequestBody SpecialtyPriceRequest request
     ) {
         log.debug("POST request to createSpecialtyPrice for specialty {}", specialtyId);
-        var response = specialtyPriceService.save(specialtyId, request);
-        return ResponseEntity.ok(response);
+        var specialty = specialtyPriceService.save(specialtyId, request);
+        return ResponseEntity.created(URI.create("/api/v1/specialties/specialty-prices/" + specialtyId)).body(specialty);
+    }
+
+    @GetMapping("/specialty-prices/{id}")
+    public ResponseEntity<SpecialtyPriceResponse> getSpecialtyPrice(@PathVariable Long id) {
+        log.debug("GET request to getSpecialtyPrice for specialty {}", id);
+        try {
+            return ResponseEntity.ok(specialtyPriceService.getSpecialtyPrice(id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 }

@@ -48,7 +48,8 @@ public class ComorbidityServiceImpl implements ComorbidityService {
     @Transactional(readOnly = true)
     public ComorbidityResponse findOne(Long id) {
         log.debug("Find comorbidity with id: {}", id);
-        var comorbidity = comorbidityRepository.findById(id).orElseThrow(NotFoundServiceException::new);
+        var comorbidity = comorbidityRepository.findById(id)
+                .orElseThrow(() -> new NotFoundServiceException("Comorbidity with id: " + id + " not found"));
         return ComorbidityMapper.comorbidityToComorbidityResponse(comorbidity, new ComorbidityResponse());
     }
 
@@ -66,10 +67,9 @@ public class ComorbidityServiceImpl implements ComorbidityService {
     public ComorbidityResponse update(Long id, ComorbidityRequest request) {
         log.debug("Update comorbidity with id: {} and body: {}", id, request);
         var comorbidity = comorbidityRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Comorbidity with id: " + id + " not found"));
+                .orElseThrow(() -> new NotFoundServiceException("Comorbidity with id: " + id + " not found"));
 
-        comorbidity.setName(request.getName());
-        comorbidity.setDescription(request.getDescription());
+        ComorbidityMapper.comorbidityRequestToComorbidity(request, comorbidity);
         comorbidityRepository.save(comorbidity);
         return ComorbidityMapper.comorbidityToComorbidityResponse(comorbidity, new ComorbidityResponse());
     }
@@ -79,7 +79,7 @@ public class ComorbidityServiceImpl implements ComorbidityService {
     public void delete(Long id) {
         log.debug("Delete comorbidity with id: {}", id);
         var comorbidity = comorbidityRepository.findById(id)
-                .orElseThrow(NotFoundServiceException::new);
+                .orElseThrow(() -> new NotFoundServiceException("Comorbidity with id: " + id + " not found"));
         if (comorbidity.getDeletedAt() != null) {
             throw new RuntimeException();
         }

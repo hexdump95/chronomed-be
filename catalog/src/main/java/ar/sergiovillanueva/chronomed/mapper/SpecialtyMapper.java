@@ -5,7 +5,9 @@ import ar.sergiovillanueva.chronomed.dto.SpecialtyPriceResponse;
 import ar.sergiovillanueva.chronomed.dto.SpecialtyRequest;
 import ar.sergiovillanueva.chronomed.dto.SpecialtyResponse;
 import ar.sergiovillanueva.chronomed.entity.Specialty;
+import ar.sergiovillanueva.chronomed.entity.SpecialtyPrice;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class SpecialtyMapper {
@@ -26,7 +28,9 @@ public class SpecialtyMapper {
         response.setId(specialty.getId());
         response.setName(specialty.getName());
         response.setDescription(specialty.getDescription());
-        var specialtyPrices = specialty.getSpecialtyPrices().stream().map(sp -> {
+        var specialtyPrices = specialty.getSpecialtyPrices().stream()
+                .sorted(Comparator.comparing(SpecialtyPrice::getValidFrom).reversed())
+                .map(sp -> {
             var r = new SpecialtyPriceResponse();
             r.setId(sp.getId());
             r.setValidFrom(sp.getValidFrom());

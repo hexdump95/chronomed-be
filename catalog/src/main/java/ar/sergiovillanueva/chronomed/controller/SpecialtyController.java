@@ -1,11 +1,10 @@
 package ar.sergiovillanueva.chronomed.controller;
 
-import ar.sergiovillanueva.chronomed.dto.PageResponse;
-import ar.sergiovillanueva.chronomed.dto.SpecialtyDetailResponse;
-import ar.sergiovillanueva.chronomed.dto.SpecialtyRequest;
-import ar.sergiovillanueva.chronomed.dto.SpecialtyResponse;
+import ar.sergiovillanueva.chronomed.dto.*;
 import ar.sergiovillanueva.chronomed.service.NotFoundServiceException;
+import ar.sergiovillanueva.chronomed.service.SpecialtyPriceService;
 import ar.sergiovillanueva.chronomed.service.SpecialtyService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +17,11 @@ import java.net.URI;
 public class SpecialtyController {
     private final Logger log = LoggerFactory.getLogger(SpecialtyController.class);
     private final SpecialtyService specialtyService;
+    private final SpecialtyPriceService specialtyPriceService;
 
-    public SpecialtyController(SpecialtyService specialtyService) {
+    public SpecialtyController(SpecialtyService specialtyService, SpecialtyPriceService specialtyPriceService) {
         this.specialtyService = specialtyService;
+        this.specialtyPriceService = specialtyPriceService;
     }
 
     @GetMapping
@@ -68,6 +69,16 @@ public class SpecialtyController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @PostMapping("/{specialtyId}/specialty-prices")
+    public ResponseEntity<SpecialtyPriceResponse> createSpecialtyPrice(
+            @PathVariable Long specialtyId,
+            @Valid @RequestBody SpecialtyPriceRequest request
+    ) {
+        log.debug("POST request to createSpecialtyPrice for specialty {}", specialtyId);
+        var response = specialtyPriceService.save(specialtyId, request);
+        return ResponseEntity.ok(response);
     }
 
 }

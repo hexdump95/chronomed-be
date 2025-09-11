@@ -1,10 +1,12 @@
 package ar.sergiovillanueva.chronomed.dto;
 
+import ar.sergiovillanueva.chronomed.validations.ValidFromBeforeValidTo;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 import java.time.Instant;
 
+@ValidFromBeforeValidTo
 public class SpecialtyPriceRequest {
 
     @NotNull(message = "validFrom should have a value")

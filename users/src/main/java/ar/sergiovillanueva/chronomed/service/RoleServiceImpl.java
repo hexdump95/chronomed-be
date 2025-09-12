@@ -1,6 +1,7 @@
 package ar.sergiovillanueva.chronomed.service;
 
 import ar.sergiovillanueva.chronomed.dto.KeycloakRole;
+import ar.sergiovillanueva.chronomed.dto.KeycloakUser;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -8,10 +9,10 @@ import java.util.Objects;
 
 @Service
 public class RoleServiceImpl implements RoleService {
-    private final AuthService<KeycloakRole> authService;
+    private final AuthService<KeycloakUser, KeycloakRole> authService;
     private static final String EXCLUDED_ROLE = "uma_protection";
 
-    public RoleServiceImpl(AuthService<KeycloakRole> authService) {
+    public RoleServiceImpl(AuthService<KeycloakUser, KeycloakRole> authService) {
         this.authService = authService;
     }
 

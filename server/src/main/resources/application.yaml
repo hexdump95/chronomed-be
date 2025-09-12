@@ -1,3 +1,5 @@
+server:
+  port: 8082
 spring:
   application:
     name: chronomed
@@ -18,3 +20,16 @@ logging:
 springdoc:
   swagger-ui:
     path: /swagger
+
+httpclient:
+  keycloak:
+    url: http://localhost:8080
+    chronomed:
+      client-id: chronomed-admin
+      client-uuid: 9eb859c4-3ded-40f4-83d8-ce8b1dbc8242
+    admincli:
+      token:
+        grant-type: password
+        client-id: admin-cli
+        username: admin
+        password: secret

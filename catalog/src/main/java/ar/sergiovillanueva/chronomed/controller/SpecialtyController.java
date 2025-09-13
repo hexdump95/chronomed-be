@@ -8,11 +8,10 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/specialties")
@@ -32,13 +31,13 @@ public class SpecialtyController {
             @RequestParam(defaultValue = "0") int page
     ) {
         log.debug("GET request to getSpecialties");
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
-            log.info(authentication.getName());
-            log.info(authentication.getPrincipal().toString());
-            log.info(authentication.getCredentials().toString());
-        }
-        return specialtyService.findAll(name, page);
+        return specialtyService.findSpecialties(name, page);
+    }
+
+    @GetMapping("/all")
+    public List<SelectEntityResponse> getAllSpecialties() {
+        log.debug("GET request to getAllSpecialties");
+        return specialtyService.findAllSpecialties();
     }
 
     @GetMapping("/{id}")

@@ -1,12 +1,13 @@
 package ar.sergiovillanueva.chronomed.service;
 
-import ar.sergiovillanueva.chronomed.dto.FacilityDetailResponse;
-import ar.sergiovillanueva.chronomed.dto.FacilityRequest;
-import ar.sergiovillanueva.chronomed.dto.FacilityResponse;
-import ar.sergiovillanueva.chronomed.dto.PageResponse;
+import ar.sergiovillanueva.chronomed.dto.*;
+
+import java.util.List;
 
 public interface FacilityService {
-    PageResponse<FacilityResponse> findAll(String name, int page);
+    PageResponse<FacilityResponse> findFacilities(String name, int page);
+
+    List<SelectEntityResponse> findAllFacilities();
 
     FacilityDetailResponse findOne(Long id);
 

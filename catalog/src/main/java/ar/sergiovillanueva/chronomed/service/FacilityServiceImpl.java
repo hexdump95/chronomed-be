@@ -1,9 +1,6 @@
 package ar.sergiovillanueva.chronomed.service;
 
-import ar.sergiovillanueva.chronomed.dto.PageResponse;
-import ar.sergiovillanueva.chronomed.dto.FacilityDetailResponse;
-import ar.sergiovillanueva.chronomed.dto.FacilityRequest;
-import ar.sergiovillanueva.chronomed.dto.FacilityResponse;
+import ar.sergiovillanueva.chronomed.dto.*;
 import ar.sergiovillanueva.chronomed.entity.Facility;
 import ar.sergiovillanueva.chronomed.mapper.FacilityMapper;
 import ar.sergiovillanueva.chronomed.repository.FacilityRepository;
@@ -15,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.List;
 
 @Service
 public class FacilityServiceImpl implements FacilityService {
@@ -28,7 +26,7 @@ public class FacilityServiceImpl implements FacilityService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<FacilityResponse> findAll(String name, int page) {
+    public PageResponse<FacilityResponse> findFacilities(String name, int page) {
         log.debug("Find all facilities with name: {} and page: {}", name, page);
         var specification = FacilitySpecification.byDeletedAtNull();
         if (name != null && !name.isBlank()) {
@@ -45,6 +43,15 @@ public class FacilityServiceImpl implements FacilityService {
                 .pageSize(PAGE_SIZE)
                 .totalItems(pagedFacilities.getTotalElements())
                 .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<SelectEntityResponse> findAllFacilities() {
+        log.debug("Find all facilities");
+        var specification = FacilitySpecification.byDeletedAtNull();
+        var facilities = facilityRepository.findAll(specification);
+        return facilities.stream().map(x -> FacilityMapper.facilityToSelectEntityResponse(x, new SelectEntityResponse())).toList();
     }
 
     @Override

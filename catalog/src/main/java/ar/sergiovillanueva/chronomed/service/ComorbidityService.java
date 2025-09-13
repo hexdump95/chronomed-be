@@ -2,8 +2,12 @@ package ar.sergiovillanueva.chronomed.service;
 
 import ar.sergiovillanueva.chronomed.dto.*;
 
+import java.util.List;
+
 public interface ComorbidityService {
-    PageResponse<ComorbidityResponse> findAll(String name, int page);
+    PageResponse<ComorbidityResponse> findComorbidities(String name, int page);
+
+    List<SelectEntityResponse> findAllComorbidities();
 
     ComorbidityResponse findOne(Long id);
 

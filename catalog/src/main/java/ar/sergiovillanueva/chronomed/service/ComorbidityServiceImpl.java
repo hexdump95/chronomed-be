@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.List;
 
 @Component
 public class ComorbidityServiceImpl implements ComorbidityService {
@@ -25,7 +26,7 @@ public class ComorbidityServiceImpl implements ComorbidityService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<ComorbidityResponse> findAll(String name, int page) {
+    public PageResponse<ComorbidityResponse> findComorbidities(String name, int page) {
         log.debug("Find all comorbidities with name: {} and page: {}", name, page);
         var specification = ComorbiditySpecification.byDeletedAtNull();
         if (name != null && !name.isBlank()) {
@@ -42,6 +43,15 @@ public class ComorbidityServiceImpl implements ComorbidityService {
                 .pageSize(PAGE_SIZE)
                 .totalItems(pagedComorbidities.getTotalElements())
                 .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<SelectEntityResponse> findAllComorbidities() {
+        log.debug("Find all comorbidities");
+        var specification = ComorbiditySpecification.byDeletedAtNull();
+        var comorbidities = comorbidityRepository.findAll(specification);
+        return comorbidities.stream().map(x -> ComorbidityMapper.comorbidityToSelectEntityResponse(x, new SelectEntityResponse())).toList();
     }
 
     @Override

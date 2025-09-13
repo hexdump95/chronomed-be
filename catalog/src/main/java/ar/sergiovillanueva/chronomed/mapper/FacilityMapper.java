@@ -17,6 +17,12 @@ public class FacilityMapper {
         return response;
     }
 
+    public static SelectEntityResponse facilityToSelectEntityResponse(Facility entity, SelectEntityResponse response) {
+        response.setId(entity.getId());
+        response.setName(entity.getName());
+        return response;
+    }
+
     public static Facility facilityRequestToFacility(FacilityRequest request, Facility entity) {
         entity.setName(request.getName());
         entity.setDescription(request.getDescription());

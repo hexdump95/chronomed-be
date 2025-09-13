@@ -34,9 +34,9 @@ public class AccountController {
         }
     }
 
-    @GetMapping("/roles")
-    public ResponseEntity<List<KeycloakRole>> getRoles() {
-        log.debug("GET request to getRoles");
+    @GetMapping("/roles/all")
+    public ResponseEntity<List<KeycloakRole>> getAllRoles() {
+        log.debug("GET request to getAllRoles");
         try {
             return ResponseEntity.ok(roleService.getRoles());
         } catch (RuntimeException e) {

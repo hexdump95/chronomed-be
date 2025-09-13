@@ -1,14 +1,10 @@
 package ar.sergiovillanueva.chronomed.mapper;
 
-import ar.sergiovillanueva.chronomed.dto.SpecialtyDetailResponse;
-import ar.sergiovillanueva.chronomed.dto.SpecialtyPriceResponse;
-import ar.sergiovillanueva.chronomed.dto.SpecialtyRequest;
-import ar.sergiovillanueva.chronomed.dto.SpecialtyResponse;
+import ar.sergiovillanueva.chronomed.dto.*;
 import ar.sergiovillanueva.chronomed.entity.Specialty;
 import ar.sergiovillanueva.chronomed.entity.SpecialtyPrice;
 
 import java.util.Comparator;
-import java.util.List;
 
 public class SpecialtyMapper {
     public static SpecialtyResponse specialtyToSpecialtyResponse(Specialty specialty, SpecialtyResponse response) {
@@ -24,6 +20,12 @@ public class SpecialtyMapper {
         return specialty;
     }
 
+    public static SelectEntityResponse specialtyToSelectEntityResponse(Specialty entity, SelectEntityResponse response) {
+        response.setId(entity.getId());
+        response.setName(entity.getName());
+        return response;
+    }
+
     public static SpecialtyDetailResponse specialtyToSpecialtyDetailResponse(Specialty specialty, SpecialtyDetailResponse response) {
         response.setId(specialty.getId());
         response.setName(specialty.getName());
@@ -31,13 +33,13 @@ public class SpecialtyMapper {
         var specialtyPrices = specialty.getSpecialtyPrices().stream()
                 .sorted(Comparator.comparing(SpecialtyPrice::getValidFrom).reversed())
                 .map(sp -> {
-            var r = new SpecialtyPriceResponse();
-            r.setId(sp.getId());
-            r.setValidFrom(sp.getValidFrom());
-            r.setValidTo(sp.getValidTo());
-            r.setPrice(sp.getPrice());
-            return r;
-        }).toList();
+                    var r = new SpecialtyPriceResponse();
+                    r.setId(sp.getId());
+                    r.setValidFrom(sp.getValidFrom());
+                    r.setValidTo(sp.getValidTo());
+                    r.setPrice(sp.getPrice());
+                    return r;
+                }).toList();
         response.setSpecialtyPrices(specialtyPrices);
         return response;
     }

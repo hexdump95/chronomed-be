@@ -1,9 +1,6 @@
 package ar.sergiovillanueva.chronomed.service;
 
-import ar.sergiovillanueva.chronomed.dto.PageResponse;
-import ar.sergiovillanueva.chronomed.dto.SpecialtyDetailResponse;
-import ar.sergiovillanueva.chronomed.dto.SpecialtyRequest;
-import ar.sergiovillanueva.chronomed.dto.SpecialtyResponse;
+import ar.sergiovillanueva.chronomed.dto.*;
 import ar.sergiovillanueva.chronomed.entity.Specialty;
 import ar.sergiovillanueva.chronomed.mapper.SpecialtyMapper;
 import ar.sergiovillanueva.chronomed.repository.SpecialtyRepository;
@@ -15,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.List;
 
 @Service
 public class SpecialtyServiceImpl implements SpecialtyService {
@@ -28,7 +26,7 @@ public class SpecialtyServiceImpl implements SpecialtyService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<SpecialtyResponse> findAll(String name, int page) {
+    public PageResponse<SpecialtyResponse> findSpecialties(String name, int page) {
         log.debug("Find all specialties with name: {} and page: {}", name, page);
         var specification = SpecialtySpecification.byDeletedAtNull();
         if (name != null && !name.isBlank()) {
@@ -45,6 +43,15 @@ public class SpecialtyServiceImpl implements SpecialtyService {
                 .pageSize(PAGE_SIZE)
                 .totalItems(pagedSpecialties.getTotalElements())
                 .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<SelectEntityResponse> findAllSpecialties() {
+        log.debug("Find all specialties");
+        var specification = SpecialtySpecification.byDeletedAtNull();
+        var specialties = specialtyRepository.findAll(specification);
+        return specialties.stream().map(x -> SpecialtyMapper.specialtyToSelectEntityResponse(x, new SelectEntityResponse())).toList();
     }
 
     @Override

@@ -3,6 +3,7 @@ package ar.sergiovillanueva.chronomed.controller;
 import ar.sergiovillanueva.chronomed.dto.PageResponse;
 import ar.sergiovillanueva.chronomed.dto.ComorbidityRequest;
 import ar.sergiovillanueva.chronomed.dto.ComorbidityResponse;
+import ar.sergiovillanueva.chronomed.dto.SelectEntityResponse;
 import ar.sergiovillanueva.chronomed.service.NotFoundServiceException;
 import ar.sergiovillanueva.chronomed.service.ComorbidityService;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/comorbidities")
@@ -28,7 +30,13 @@ public class ComorbidityController {
             @RequestParam(defaultValue = "0") int page
     ) {
         log.debug("GET request to getComorbidities");
-        return comorbidityService.findAll(name, page);
+        return comorbidityService.findComorbidities(name, page);
+    }
+
+    @GetMapping("/all")
+    public List<SelectEntityResponse> getAllComorbidities() {
+        log.debug("GET request to getAllComorbidities");
+        return comorbidityService.findAllComorbidities();
     }
 
     @GetMapping("/{id}")

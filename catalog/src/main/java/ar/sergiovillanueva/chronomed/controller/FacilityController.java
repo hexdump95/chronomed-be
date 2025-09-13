@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/facilities")
@@ -29,7 +30,13 @@ public class FacilityController {
             @RequestParam(defaultValue = "0") int page
     ) {
         log.debug("GET request to getFacilities");
-        return facilityService.findAll(name, page);
+        return facilityService.findFacilities(name, page);
+    }
+
+    @GetMapping("/all")
+    public List<SelectEntityResponse> getAllFacilities() {
+        log.debug("GET request to getAllFacilities");
+        return facilityService.findAllFacilities();
     }
 
     @GetMapping("/{id}")

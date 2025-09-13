@@ -2,7 +2,6 @@ package ar.sergiovillanueva.chronomed.service;
 
 import ar.sergiovillanueva.chronomed.dto.*;
 import ar.sergiovillanueva.chronomed.entity.Account;
-import ar.sergiovillanueva.chronomed.entity.AccountRole;
 import ar.sergiovillanueva.chronomed.mapper.AccountMapper;
 import ar.sergiovillanueva.chronomed.repository.AccountRepository;
 import org.slf4j.Logger;
@@ -30,29 +29,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public PageResponse<KeycloakUser> findAll(int page) {
-        return authService.getUsers(page);
-    }
-
-    @Override
     @Transactional
-    public AccountResponse findById(UUID id) {
+    public AccountResponse findByUserId(UUID id) {
         var accountOpt = accountRepository.findById(id);
-        var account = accountOpt.orElseGet(() -> synchronizeBEAccount(id));
-        return AccountMapper.accountToAccountResponse(account, new AccountResponse());
-    }
-
-    @Override
-    @Transactional
-    public AccountResponse createAccount(AccountRequest request) {
-        var keycloakUserRequest = AccountMapper.accountRequestToKeycloakUserCreateRequest(request, new KeycloakUserCreateRequest());
-        var keycloakUser = authService.createUser(keycloakUserRequest);
-        authService.addRolesToUser(request.getRoles(), keycloakUser.getId());
-
-        var account = AccountMapper.accountRequestToAccount(request, new Account());
-        account.setId(keycloakUser.getId());
-
-        accountRepository.save(account);
+        var keycloakUser = authService.getUserById(id);
+        var account = accountOpt.orElseGet(() -> synchronizeBEAccount(keycloakUser));
         return AccountMapper.accountToAccountResponse(account, new AccountResponse());
     }
 
@@ -60,22 +41,6 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     public AccountResponse updateAccount(UUID id, AccountUpdateRequest request) {
         var account = accountRepository.findById(id).orElseThrow(() -> new NotFoundServiceException("account not found"));
-
-        var keycloakUserRoles = authService.getRolesByUserId(id);
-        List<KeycloakRole> rolesToAdd = new ArrayList<>();
-        List<KeycloakRole> rolesToRemove = new ArrayList<>();
-        request.getRoles().forEach(reqRole -> {
-            if (!keycloakUserRoles.contains(reqRole))
-                rolesToAdd.add(reqRole);
-        });
-        keycloakUserRoles.forEach(role -> {
-            if (!request.getRoles().contains(role))
-                rolesToRemove.add(role);
-        });
-        if (!rolesToAdd.isEmpty())
-            authService.addRolesToUser(rolesToAdd, id);
-        if (!rolesToRemove.isEmpty())
-            authService.removeRolesToUser(rolesToRemove, id);
 
         if (!request.getFacilityIds().isEmpty()) {
             var existingFacilityIds = facilityLookupService.verifyExistingIds(request.getFacilityIds());
@@ -98,24 +63,9 @@ public class AccountServiceImpl implements AccountService {
         return AccountMapper.accountToAccountResponse(account, new AccountResponse());
     }
 
-    private Account synchronizeBEAccount(UUID id) {
+    private Account synchronizeBEAccount(KeycloakUser kcUser) {
         var account = new Account();
-        var kcUser = authService.getUserById(id);
-
-        account.setId(kcUser.getId());
-        account.setEmail(kcUser.getEmail());
-        account.setIdentityDocument(kcUser.getUsername());
-        account.setFirstName(kcUser.getFirstName());
-        account.setLastName(kcUser.getLastName());
-
-        var keycloakUserRoles = authService.getRolesByUserId(id);
-        var roles = keycloakUserRoles.stream().map(kr -> {
-            var role = new AccountRole();
-            role.setRoleId(kr.getId());
-            return role;
-        }).toList();
-
-        account.setRoles(roles);
+        account.setUserId(kcUser.getId());
         accountRepository.save(account);
         return account;
     }

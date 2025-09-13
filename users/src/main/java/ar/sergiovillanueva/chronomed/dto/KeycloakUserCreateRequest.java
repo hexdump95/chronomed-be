@@ -1,10 +1,13 @@
 package ar.sergiovillanueva.chronomed.dto;
 
+import java.util.List;
+
 public class KeycloakUserCreateRequest {
     private String username;
     private String firstName;
     private String lastName;
     private String email;
+    private List<KeycloakRole> roles;
 
     public String getUsername() {
         return username;
@@ -38,4 +41,11 @@ public class KeycloakUserCreateRequest {
         this.email = email;
     }
 
+    public List<KeycloakRole> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<KeycloakRole> roles) {
+        this.roles = roles;
+    }
 }

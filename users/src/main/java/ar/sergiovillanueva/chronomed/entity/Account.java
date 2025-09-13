@@ -10,32 +10,14 @@ import java.util.UUID;
 @Entity
 public class Account {
     @Id
-    private UUID id;
-
-    @Column(name = "first_name")
-    private String firstName;
-
-    @Column(name = "last_name")
-    private String lastName;
-
-    @Column(name = "identity_document")
-    private String identityDocument;
+    @Column(name = "user_id")
+    private UUID userId;
 
     @Column(name = "phone_number")
     private String phoneNumber;
 
     @Column(name = "file_number")
     private String fileNumber;
-
-    @Column(name = "email")
-    private String email;
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    @JoinTable(name = "account_account_role",
-            joinColumns = @JoinColumn(name = "account_id"),
-            inverseJoinColumns = @JoinColumn(name = "account_role_id")
-    )
-    private List<AccountRole> roles = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinTable(name = "account_account_facility",
@@ -51,36 +33,12 @@ public class Account {
     )
     private List<AccountSpecialty> specialties = new ArrayList<>();
 
-    public UUID getId() {
-        return id;
+    public UUID getUserId() {
+        return userId;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getIdentityDocument() {
-        return identityDocument;
-    }
-
-    public void setIdentityDocument(String identityDocument) {
-        this.identityDocument = identityDocument;
+    public void setUserId(UUID userId) {
+        this.userId = userId;
     }
 
     public String getPhoneNumber() {
@@ -97,22 +55,6 @@ public class Account {
 
     public void setFileNumber(String fileNumber) {
         this.fileNumber = fileNumber;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public List<AccountRole> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<AccountRole> roles) {
-        this.roles = roles;
     }
 
     public List<AccountFacility> getFacilities() {

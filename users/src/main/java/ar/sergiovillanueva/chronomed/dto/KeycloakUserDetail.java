@@ -1,8 +1,10 @@
 package ar.sergiovillanueva.chronomed.dto;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
-public class KeycloakUser {
+public class KeycloakUserDetail {
     private UUID id;
     private String username;
     private String firstName;
@@ -10,6 +12,7 @@ public class KeycloakUser {
     private String email;
     private boolean enabled;
     private boolean emailVerified;
+    private List<KeycloakRole> roles = new ArrayList<>();
 
     public UUID getId() {
         return id;
@@ -65,6 +68,14 @@ public class KeycloakUser {
 
     public void setEmailVerified(boolean emailVerified) {
         this.emailVerified = emailVerified;
+    }
+
+    public List<KeycloakRole> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<KeycloakRole> roles) {
+        this.roles = roles;
     }
 
 }

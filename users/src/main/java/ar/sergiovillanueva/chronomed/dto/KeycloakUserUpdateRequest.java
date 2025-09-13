@@ -1,23 +1,14 @@
 package ar.sergiovillanueva.chronomed.dto;
 
-import java.util.UUID;
+import java.util.List;
 
-public class KeycloakUser {
-    private UUID id;
+public class KeycloakUserUpdateRequest {
     private String username;
     private String firstName;
     private String lastName;
     private String email;
     private boolean enabled;
-    private boolean emailVerified;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
+    private List<KeycloakRole> roles;
 
     public String getUsername() {
         return username;
@@ -59,12 +50,11 @@ public class KeycloakUser {
         this.enabled = enabled;
     }
 
-    public boolean isEmailVerified() {
-        return emailVerified;
+    public List<KeycloakRole> getRoles() {
+        return roles;
     }
 
-    public void setEmailVerified(boolean emailVerified) {
-        this.emailVerified = emailVerified;
+    public void setRoles(List<KeycloakRole> roles) {
+        this.roles = roles;
     }
-
 }

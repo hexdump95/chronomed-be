@@ -6,7 +6,6 @@ import java.util.List;
 public class AccountUpdateRequest {
     private String phoneNumber;
     private String fileNumber;
-    private List<KeycloakRole> roles = new ArrayList<>();
     private List<Long> facilityIds = new ArrayList<>();
     private List<Long> specialtyIds = new ArrayList<>();
 
@@ -24,14 +23,6 @@ public class AccountUpdateRequest {
 
     public void setFileNumber(String fileNumber) {
         this.fileNumber = fileNumber;
-    }
-
-    public List<KeycloakRole> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<KeycloakRole> roles) {
-        this.roles = roles;
     }
 
     public List<Long> getFacilityIds() {

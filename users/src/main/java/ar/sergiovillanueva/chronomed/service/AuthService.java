@@ -1,9 +1,6 @@
 package ar.sergiovillanueva.chronomed.service;
 
-import ar.sergiovillanueva.chronomed.dto.KeycloakRole;
-import ar.sergiovillanueva.chronomed.dto.KeycloakUserCreateRequest;
-import ar.sergiovillanueva.chronomed.dto.KeycloakUser;
-import ar.sergiovillanueva.chronomed.dto.PageResponse;
+import ar.sergiovillanueva.chronomed.dto.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -13,15 +10,11 @@ public interface AuthService {
 
     KeycloakUser getUserById(UUID id);
 
-    KeycloakUser getUserByEmail(String email);
+    KeycloakUserDetail getUserDetailById(UUID id);
 
-    KeycloakUser createUser(KeycloakUserCreateRequest keycloakUserCreateRequest);
+    KeycloakUser createUser(KeycloakUserCreateRequest request);
 
-    List<KeycloakRole> getRolesByUserId(UUID userId);
-
-    void addRolesToUser(List<KeycloakRole> roles, UUID userId);
-
-    void removeRolesToUser(List<KeycloakRole> roles, UUID userId);
+    KeycloakUser updateUser(UUID id, KeycloakUserUpdateRequest request);
 
     List<KeycloakRole> getRoles();
 }

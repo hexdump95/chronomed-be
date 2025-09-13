@@ -4,86 +4,85 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AccountRequest {
-    private String firstName;
-    private String lastName;
-    private String identityDocument;
-    private String phoneNumber;
-    private String fileNumber;
-    private String email;
-    private List<KeycloakRole> roles = new ArrayList<>();
-    private List<Long> facilityIds = new ArrayList<>();
-    private List<Long> specialtyIds = new ArrayList<>();
+    private String userFirstName;
+    private String userLastName;
+    private String userUsername;
+    private String accountPhoneNumber;
+    private String accountFileNumber;
+    private String userEmail;
+    private List<KeycloakRole> userRoles = new ArrayList<>();
+    private List<Long> accountFacilityIds = new ArrayList<>();
+    private List<Long> accountSpecialtyIds = new ArrayList<>();
 
-    public String getFirstName() {
-        return firstName;
+    public String getUserFirstName() {
+        return userFirstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setUserFirstName(String userFirstName) {
+        this.userFirstName = userFirstName;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getUserLastName() {
+        return userLastName;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setUserLastName(String userLastName) {
+        this.userLastName = userLastName;
     }
 
-    public String getIdentityDocument() {
-        return identityDocument;
+    public String getUserUsername() {
+        return userUsername;
     }
 
-    public void setIdentityDocument(String identityDocument) {
-        this.identityDocument = identityDocument;
+    public void setUserUsername(String userUsername) {
+        this.userUsername = userUsername;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getAccountPhoneNumber() {
+        return accountPhoneNumber;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setAccountPhoneNumber(String accountPhoneNumber) {
+        this.accountPhoneNumber = accountPhoneNumber;
     }
 
-    public String getFileNumber() {
-        return fileNumber;
+    public String getAccountFileNumber() {
+        return accountFileNumber;
     }
 
-    public void setFileNumber(String fileNumber) {
-        this.fileNumber = fileNumber;
+    public void setAccountFileNumber(String accountFileNumber) {
+        this.accountFileNumber = accountFileNumber;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUserEmail() {
+        return userEmail;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
-    public List<KeycloakRole> getRoles() {
-        return roles;
+    public List<KeycloakRole> getUserRoles() {
+        return userRoles;
     }
 
-    public void setRoles(List<KeycloakRole> roles) {
-        this.roles = roles;
+    public void setUserRoles(List<KeycloakRole> userRoles) {
+        this.userRoles = userRoles;
     }
 
-    public List<Long> getFacilityIds() {
-        return facilityIds;
+    public List<Long> getAccountFacilityIds() {
+        return accountFacilityIds;
     }
 
-    public void setFacilityIds(List<Long> facilityIds) {
-        this.facilityIds = facilityIds;
+    public void setAccountFacilityIds(List<Long> accountFacilityIds) {
+        this.accountFacilityIds = accountFacilityIds;
     }
 
-    public List<Long> getSpecialtyIds() {
-        return specialtyIds;
+    public List<Long> getAccountSpecialtyIds() {
+        return accountSpecialtyIds;
     }
 
-    public void setSpecialtyIds(List<Long> specialtyIds) {
-        this.specialtyIds = specialtyIds;
+    public void setAccountSpecialtyIds(List<Long> accountSpecialtyIds) {
+        this.accountSpecialtyIds = accountSpecialtyIds;
     }
-
 }

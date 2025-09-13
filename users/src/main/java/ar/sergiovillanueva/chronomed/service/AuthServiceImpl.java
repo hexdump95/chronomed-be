@@ -2,6 +2,7 @@ package ar.sergiovillanueva.chronomed.service;
 
 import ar.sergiovillanueva.chronomed.config.KeycloakChronomedConfig;
 import ar.sergiovillanueva.chronomed.dto.KeycloakRole;
+import ar.sergiovillanueva.chronomed.dto.KeycloakUserCreateRequest;
 import ar.sergiovillanueva.chronomed.dto.KeycloakUser;
 import ar.sergiovillanueva.chronomed.dto.PageResponse;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,9 +17,10 @@ import ar.sergiovillanueva.chronomed.config.KeycloakAdminCliConfig;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 @Service
-public class AuthServiceImpl implements AuthService<KeycloakUser, KeycloakRole> {
+public class AuthServiceImpl implements AuthService {
     private final RestTemplate restTemplate;
     private final KeycloakAdminCliConfig adminCliConfig;
     private final KeycloakChronomedConfig chronomedConfig;
@@ -84,6 +86,57 @@ public class AuthServiceImpl implements AuthService<KeycloakUser, KeycloakRole> 
                 .pageSize(PAGE_SIZE)
                 .totalItems(countResponse.getBody())
                 .build();
+    }
+
+    @Override
+    public KeycloakUser getUserByEmail(String email) {
+        var url = keycloakUrl + "/admin/realms/" + chronomedConfig.getClientId() + "/users?email=" + email;
+        var requestEntity = new HttpEntity<>(null, getKeycloakAdminCliJwtHeader());
+        var response = restTemplate.exchange(url, HttpMethod.GET, requestEntity, new ParameterizedTypeReference<List<KeycloakUser>>() {
+        });
+        if (response.getStatusCode() != HttpStatus.OK) {
+            throw new KeycloakServiceException();
+        }
+        if (response.getBody() == null) {
+            throw new NotFoundServiceException("user not found");
+        }
+        return response.getBody().getFirst();
+    }
+
+    @Override
+    public KeycloakUser createUser(KeycloakUserCreateRequest request) {
+        var url = keycloakUrl + "/admin/realms/" + chronomedConfig.getClientId() + "/users";
+        var requestEntity = new HttpEntity<>(request, getKeycloakAdminCliJwtHeader());
+        var countResponse = restTemplate.exchange(url, HttpMethod.POST, requestEntity, Void.class);
+        if (countResponse.getStatusCode() != HttpStatus.CREATED) {
+            throw new KeycloakServiceException();
+        }
+        return getUserByEmail(request.getEmail());
+    }
+
+    @Override
+    public List<KeycloakRole> getRolesByUserId(UUID userId) {
+        var url = keycloakUrl + "/admin/realms/" + chronomedConfig.getClientId() + "/users?email=" + userId.toString() + "/role-mappings/clients/" + chronomedConfig.getClientUuid() + "/composite";
+        var requestEntity = new HttpEntity<>(null, getKeycloakAdminCliJwtHeader());
+        var response = restTemplate.exchange(url, HttpMethod.GET, requestEntity, new ParameterizedTypeReference<List<KeycloakRole>>() {
+        });
+        if (response.getStatusCode() != HttpStatus.OK) {
+            throw new KeycloakServiceException();
+        }
+        if (response.getBody() == null) {
+            throw new RuntimeException();
+        }
+        return response.getBody();
+    }
+
+    @Override
+    public void assignRolesToUser(List<KeycloakRole> roles, UUID userId) {
+        var url = keycloakUrl + "/admin/realms/" + chronomedConfig.getClientId() + "/users/" + userId + "/role-mappings/clients/" + chronomedConfig.getClientUuid();
+        var requestEntity = new HttpEntity<>(roles, getKeycloakAdminCliJwtHeader());
+        var response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, Void.class);
+        if (response.getStatusCode() != HttpStatus.NO_CONTENT) {
+            throw new KeycloakServiceException();
+        }
     }
 
     @Override

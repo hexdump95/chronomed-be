@@ -1,22 +1,10 @@
 package ar.sergiovillanueva.chronomed.dto;
 
-import java.util.UUID;
-
-public class KeycloakUser {
-    private UUID id;
+public class KeycloakUserCreateRequest {
     private String username;
     private String firstName;
     private String lastName;
     private String email;
-    private boolean enabled;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
 
     public String getUsername() {
         return username;
@@ -50,11 +38,4 @@ public class KeycloakUser {
         this.email = email;
     }
 
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
 }

@@ -1,8 +1,6 @@
 package ar.sergiovillanueva.chronomed.controller;
 
-import ar.sergiovillanueva.chronomed.dto.KeycloakRole;
-import ar.sergiovillanueva.chronomed.dto.KeycloakUser;
-import ar.sergiovillanueva.chronomed.dto.PageResponse;
+import ar.sergiovillanueva.chronomed.dto.*;
 import ar.sergiovillanueva.chronomed.service.AccountService;
 import ar.sergiovillanueva.chronomed.service.RoleService;
 import org.slf4j.Logger;
@@ -25,10 +23,20 @@ public class AccountController {
     }
 
     @GetMapping()
-    public ResponseEntity<PageResponse<KeycloakUser>> getAccounts(@RequestParam int page) {
+    public ResponseEntity<PageResponse<KeycloakUser>> getAccounts(@RequestParam(defaultValue = "0") int page) {
         log.info("GET request to getAccounts");
         try {
             return ResponseEntity.ok(accountService.findAll(page));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<AccountResponse> createAccount(@RequestBody AccountRequest request) {
+        log.info("POST request to createAccount");
+        try {
+            return ResponseEntity.ok(accountService.createAccount(request));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }

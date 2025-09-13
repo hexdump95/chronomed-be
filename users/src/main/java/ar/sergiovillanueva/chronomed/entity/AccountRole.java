@@ -14,9 +14,6 @@ public class AccountRole {
     @Column(name = "role_id")
     private UUID roleId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Account account;
-
     public Long getId() {
         return id;
     }
@@ -33,11 +30,4 @@ public class AccountRole {
         this.roleId = roleId;
     }
 
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
 }

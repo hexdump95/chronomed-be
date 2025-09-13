@@ -12,9 +12,6 @@ public class AccountFacility {
     @Column(name = "facility_id")
     private Long facilityId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Account account;
-
     public Long getId() {
         return id;
     }
@@ -31,11 +28,4 @@ public class AccountFacility {
         this.facilityId = facilityId;
     }
 
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
 }

@@ -11,13 +11,17 @@ import java.util.UUID;
 public interface AuthService {
     PageResponse<KeycloakUser> getUsers(int page);
 
+    KeycloakUser getUserById(UUID id);
+
     KeycloakUser getUserByEmail(String email);
 
     KeycloakUser createUser(KeycloakUserCreateRequest keycloakUserCreateRequest);
 
     List<KeycloakRole> getRolesByUserId(UUID userId);
 
-    void assignRolesToUser(List<KeycloakRole> roles, UUID userId);
+    void addRolesToUser(List<KeycloakRole> roles, UUID userId);
+
+    void removeRolesToUser(List<KeycloakRole> roles, UUID userId);
 
     List<KeycloakRole> getRoles();
 }

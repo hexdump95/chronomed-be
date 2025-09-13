@@ -14,4 +14,6 @@ public interface SpecialtyRepository extends JpaRepository<Specialty, Long> {
     List<Specialty> findAll(Specification<Specialty> specification);
 
     Page<Specialty> findAll(Specification<Specialty> specification, Pageable pageable);
+
+    long count(Specification<Specialty> specification);
 }

@@ -14,4 +14,6 @@ public interface FacilityRepository extends JpaRepository<Facility, Long> {
     List<Facility> findAll(Specification<Facility> specification);
 
     Page<Facility> findAll(Specification<Facility> specification, Pageable pageable);
+
+    long count(Specification<Facility> specification);
 }

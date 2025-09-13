@@ -12,9 +12,6 @@ public class AccountSpecialty {
     @Column(name = "specialty_id")
     private Long specialtyId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Account account;
-
     public Long getId() {
         return id;
     }
@@ -31,11 +28,4 @@ public class AccountSpecialty {
         this.specialtyId = specialtyId;
     }
 
-    public Account getAccount() {
-        return account;
-    }
-
-    public void setAccount(Account account) {
-        this.account = account;
-    }
 }

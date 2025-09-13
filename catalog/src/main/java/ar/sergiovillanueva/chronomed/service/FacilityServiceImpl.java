@@ -15,7 +15,7 @@ import java.time.Instant;
 import java.util.List;
 
 @Service
-public class FacilityServiceImpl implements FacilityService {
+public class FacilityServiceImpl implements FacilityService, FacilityLookupService {
     private final Logger log = LoggerFactory.getLogger(FacilityServiceImpl.class);
     private final FacilityRepository facilityRepository;
     private static final Short PAGE_SIZE = 10;
@@ -96,4 +96,14 @@ public class FacilityServiceImpl implements FacilityService {
         facility.setDeletedAt(Instant.now());
         facilityRepository.save(facility);
     }
+
+    @Override
+    public boolean verifyExistingIds(List<Long> ids) {
+        log.debug("Verify existing facilities with ids: {}", ids);
+        var specification = FacilitySpecification.byDeletedAtNull();
+        specification = specification.and(FacilitySpecification.byIds(ids));
+        long count = facilityRepository.count(specification);
+        return ids.size() == count;
+    }
+
 }

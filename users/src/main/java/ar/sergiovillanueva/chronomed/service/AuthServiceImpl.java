@@ -89,6 +89,20 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public KeycloakUser getUserById(UUID id) {
+        var url = keycloakUrl + "/admin/realms/" + chronomedConfig.getClientId() + "/users/" + id;
+        var requestEntity = new HttpEntity<>(null, getKeycloakAdminCliJwtHeader());
+        var response = restTemplate.exchange(url, HttpMethod.GET, requestEntity, KeycloakUser.class);
+        if (response.getStatusCode() != HttpStatus.OK) {
+            throw new KeycloakServiceException();
+        }
+        if (response.getBody() == null) {
+            throw new NotFoundServiceException("user not found");
+        }
+        return response.getBody();
+    }
+
+    @Override
     public KeycloakUser getUserByEmail(String email) {
         var url = keycloakUrl + "/admin/realms/" + chronomedConfig.getClientId() + "/users?email=" + email;
         var requestEntity = new HttpEntity<>(null, getKeycloakAdminCliJwtHeader());
@@ -116,7 +130,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public List<KeycloakRole> getRolesByUserId(UUID userId) {
-        var url = keycloakUrl + "/admin/realms/" + chronomedConfig.getClientId() + "/users?email=" + userId.toString() + "/role-mappings/clients/" + chronomedConfig.getClientUuid() + "/composite";
+        var url = keycloakUrl + "/admin/realms/" + chronomedConfig.getClientId() + "/users/" + userId.toString() + "/role-mappings/clients/" + chronomedConfig.getClientUuid() + "/composite";
         var requestEntity = new HttpEntity<>(null, getKeycloakAdminCliJwtHeader());
         var response = restTemplate.exchange(url, HttpMethod.GET, requestEntity, new ParameterizedTypeReference<List<KeycloakRole>>() {
         });
@@ -130,10 +144,20 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void assignRolesToUser(List<KeycloakRole> roles, UUID userId) {
+    public void addRolesToUser(List<KeycloakRole> roles, UUID userId) {
         var url = keycloakUrl + "/admin/realms/" + chronomedConfig.getClientId() + "/users/" + userId + "/role-mappings/clients/" + chronomedConfig.getClientUuid();
         var requestEntity = new HttpEntity<>(roles, getKeycloakAdminCliJwtHeader());
         var response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, Void.class);
+        if (response.getStatusCode() != HttpStatus.NO_CONTENT) {
+            throw new KeycloakServiceException();
+        }
+    }
+
+    @Override
+    public void removeRolesToUser(List<KeycloakRole> roles, UUID userId) {
+        var url = keycloakUrl + "/admin/realms/" + chronomedConfig.getClientId() + "/users/" + userId + "/role-mappings/clients/" + chronomedConfig.getClientUuid();
+        var requestEntity = new HttpEntity<>(roles, getKeycloakAdminCliJwtHeader());
+        var response = restTemplate.exchange(url, HttpMethod.DELETE, requestEntity, Void.class);
         if (response.getStatusCode() != HttpStatus.NO_CONTENT) {
             throw new KeycloakServiceException();
         }

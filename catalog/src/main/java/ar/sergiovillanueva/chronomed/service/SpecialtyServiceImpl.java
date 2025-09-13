@@ -15,7 +15,8 @@ import java.time.Instant;
 import java.util.List;
 
 @Service
-public class SpecialtyServiceImpl implements SpecialtyService {
+public class SpecialtyServiceImpl implements SpecialtyService
+        , SpecialtyLookupService {
     private final Logger log = LoggerFactory.getLogger(SpecialtyServiceImpl.class);
     private final SpecialtyRepository specialtyRepository;
     private static final Short PAGE_SIZE = 10;
@@ -96,4 +97,14 @@ public class SpecialtyServiceImpl implements SpecialtyService {
         specialty.setDeletedAt(Instant.now());
         specialtyRepository.save(specialty);
     }
+
+    @Override
+    public boolean verifyExistingIds(List<Long> ids) {
+        log.debug("Verify existing specialties with ids: {}", ids);
+        var specification = SpecialtySpecification.byDeletedAtNull();
+        specification = specification.and(SpecialtySpecification.byIds(ids));
+        long count = specialtyRepository.count(specification);
+        return ids.size() == count;
+    }
+
 }

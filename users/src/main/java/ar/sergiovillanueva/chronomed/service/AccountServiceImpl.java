@@ -9,8 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -29,7 +27,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public AccountResponse findByUserId(UUID id) {
         var accountOpt = accountRepository.findById(id);
         var keycloakUser = authService.getUserById(id);

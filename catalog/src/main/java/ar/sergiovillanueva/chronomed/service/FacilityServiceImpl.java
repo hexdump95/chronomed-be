@@ -98,6 +98,7 @@ public class FacilityServiceImpl implements FacilityService, FacilityLookupServi
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean verifyExistingIds(List<Long> ids) {
         log.debug("Verify existing facilities with ids: {}", ids);
         var specification = FacilitySpecification.byDeletedAtNull();

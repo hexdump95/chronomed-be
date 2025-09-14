@@ -35,6 +35,7 @@ public class SpecialtyPriceServiceImpl implements SpecialtyPriceService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public SpecialtyPriceResponse getSpecialtyPrice(Long id) {
         log.debug("Request to get SpecialtyPrice : {}", id);
         var specialtyPrice = specialtyPriceRepository.findById(id)

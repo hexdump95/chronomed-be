@@ -15,8 +15,7 @@ import java.time.Instant;
 import java.util.List;
 
 @Service
-public class SpecialtyServiceImpl implements SpecialtyService
-        , SpecialtyLookupService {
+public class SpecialtyServiceImpl implements SpecialtyService, SpecialtyLookupService {
     private final Logger log = LoggerFactory.getLogger(SpecialtyServiceImpl.class);
     private final SpecialtyRepository specialtyRepository;
     private static final Short PAGE_SIZE = 10;
@@ -99,6 +98,7 @@ public class SpecialtyServiceImpl implements SpecialtyService
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean verifyExistingIds(List<Long> ids) {
         log.debug("Verify existing specialties with ids: {}", ids);
         var specification = SpecialtySpecification.byDeletedAtNull();

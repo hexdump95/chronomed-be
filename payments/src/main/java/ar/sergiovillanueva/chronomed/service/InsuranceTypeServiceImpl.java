@@ -22,7 +22,7 @@ public class InsuranceTypeServiceImpl implements InsuranceTypeService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<SelectEntityResponse> findAllInsuranceTypes() {
         log.debug("Find all insuranceTypes");
         var insuranceTypes = insuranceTypeRepository.findAll();

@@ -6,3 +6,5 @@ spring:
     password:
     hikari:
       maximum-pool-size: 10
+  flyway:
+    enabled: false

@@ -13,7 +13,7 @@
         <module>places</module>
         <module>users</module>
         <module>catalog</module>
-        <module>payments</module>
+        <module>billing</module>
         <module>shared</module>
         <module>scheduling</module>
         <module>reporting</module>

@@ -8,9 +8,9 @@
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <artifactId>payments</artifactId>
+    <artifactId>billing</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>payments</name>
+    <name>billing</name>
     <description>Demo project for Spring Boot</description>
     <url/>
     <licenses>

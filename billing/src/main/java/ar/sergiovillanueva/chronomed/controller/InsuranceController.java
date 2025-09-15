@@ -1,9 +1,6 @@
 package ar.sergiovillanueva.chronomed.controller;
 
-import ar.sergiovillanueva.chronomed.dto.InsuranceDetailResponse;
-import ar.sergiovillanueva.chronomed.dto.InsuranceResponse;
-import ar.sergiovillanueva.chronomed.dto.PageResponse;
-import ar.sergiovillanueva.chronomed.dto.SelectEntityResponse;
+import ar.sergiovillanueva.chronomed.dto.*;
 import ar.sergiovillanueva.chronomed.service.InsuranceService;
 import ar.sergiovillanueva.chronomed.service.InsuranceTypeService;
 import org.slf4j.Logger;
@@ -11,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -50,10 +48,37 @@ public class InsuranceController {
         }
     }
 
+    @PostMapping
+    public ResponseEntity<InsuranceResponse> createInsurance(@RequestBody InsuranceRequest request) {
+        log.debug("POST request to createInsurance");
+        var insurance = insuranceService.save(request);
+        return ResponseEntity.created(URI.create("/api/v1/insurances/" + insurance.getId())).body(insurance);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<InsuranceResponse> updateInsurance(@PathVariable Long id, @RequestBody InsuranceRequest request) {
+        log.debug("PUT request to updateInsurance");
+        try {
+            return ResponseEntity.ok(insuranceService.update(id, request));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteInsurance(@PathVariable Long id) {
+        log.debug("DELETE request to deleteInsurance with id {}", id);
+        try {
+            insuranceService.delete(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @GetMapping("/types/all")
     public List<SelectEntityResponse> getAllInsuranceTypes() {
         log.debug("GET request to getAllInsuranceTypes");
         return insuranceTypeService.findAllInsuranceTypes();
     }
-
 }

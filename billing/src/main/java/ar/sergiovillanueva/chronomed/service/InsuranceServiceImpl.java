@@ -1,9 +1,6 @@
 package ar.sergiovillanueva.chronomed.service;
 
-import ar.sergiovillanueva.chronomed.dto.InsuranceDetailResponse;
-import ar.sergiovillanueva.chronomed.dto.InsuranceResponse;
-import ar.sergiovillanueva.chronomed.dto.PageResponse;
-import ar.sergiovillanueva.chronomed.dto.SelectEntityResponse;
+import ar.sergiovillanueva.chronomed.dto.*;
 import ar.sergiovillanueva.chronomed.entity.Insurance;
 import ar.sergiovillanueva.chronomed.entity.Insurance_;
 import ar.sergiovillanueva.chronomed.mapper.InsuranceMapper;
@@ -17,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -34,7 +32,7 @@ public class InsuranceServiceImpl implements InsuranceService {
     @Override
     @Transactional(readOnly = true)
     public PageResponse<InsuranceResponse> findInsurances(String name, int page) {
-        log.debug("Find all comorbidities with name: {} and page: {}", name, page);
+        log.debug("Find all insurances with name: {} and page: {}", name, page);
         var specification = InsuranceSpecification.byDeletedAtNull();
         if (name != null && !name.isBlank()) {
             specification = specification.and(InsuranceSpecification.byNameLike(name));
@@ -71,5 +69,39 @@ public class InsuranceServiceImpl implements InsuranceService {
         Insurance insurance = insuranceRepository.findById(id)
                 .orElseThrow(() -> new NotFoundServiceException("entity not found"));
         return InsuranceMapper.insuranceToInsuranceDetailResponse(insurance, new InsuranceDetailResponse());
+    }
+
+    @Override
+    @Transactional
+    public InsuranceResponse save(InsuranceRequest request) {
+        log.debug("Save insurance with body: {}", request);
+        var insurance = InsuranceMapper.insuranceRequestToInsurance(request, new Insurance());
+        insuranceRepository.save(insurance);
+        return InsuranceMapper.insuranceToInsuranceResponse(insurance, new InsuranceResponse());
+    }
+
+    @Override
+    @Transactional
+    public InsuranceResponse update(Long id, InsuranceRequest request) {
+        log.debug("Update insurance with id: {} and body: {}", id, request);
+        var insurance = insuranceRepository.findById(id)
+                .orElseThrow(() -> new NotFoundServiceException("Insurance with id: " + id + " not found"));
+
+        InsuranceMapper.insuranceRequestToInsurance(request, insurance);
+        insuranceRepository.save(insurance);
+        return InsuranceMapper.insuranceToInsuranceResponse(insurance, new InsuranceResponse());
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        log.debug("Delete insurance with id: {}", id);
+        var insurance = insuranceRepository.findById(id)
+                .orElseThrow(() -> new NotFoundServiceException("Insurance with id: " + id + " not found"));
+        if (insurance.getDeletedAt() != null) {
+            throw new RuntimeException();
+        }
+        insurance.setDeletedAt(Instant.now());
+        insuranceRepository.save(insurance);
     }
 }

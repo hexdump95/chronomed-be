@@ -13,6 +13,14 @@ public class InsuranceSpecification {
         return (root, query, criteriaBuilder) -> root.get(Insurance_.deletedAt).isNull();
     }
 
+    public static Specification<Insurance> byNameLike(String name) {
+        return (root, query, criteriaBuilder) ->
+                criteriaBuilder.like(
+                        criteriaBuilder.upper(root.get(Insurance_.name)),
+                        "%" + name.toUpperCase() + "%"
+                );
+    }
+
     public static Specification<Insurance> byInsuranceTypeId(Long insuranceTypeId) {
         return (root, query, criteriaBuilder) -> {
             Join<Insurance, InsuranceType> insuranceTypeJoin = root.join(Insurance_.insuranceType);

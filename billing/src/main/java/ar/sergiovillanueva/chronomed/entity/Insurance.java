@@ -3,6 +3,8 @@ package ar.sergiovillanueva.chronomed.entity;
 import jakarta.persistence.*;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "insurance")
 @Entity
@@ -28,6 +30,9 @@ public class Insurance extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private InsuranceType insuranceType;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "insurance", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<InsuranceCoverage> coverages = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {
@@ -94,5 +99,13 @@ public class Insurance extends BaseEntity {
 
     public void setInsuranceType(InsuranceType insuranceType) {
         this.insuranceType = insuranceType;
+    }
+
+    public List<InsuranceCoverage> getCoverages() {
+        return coverages;
+    }
+
+    public void setCoverages(List<InsuranceCoverage> coverages) {
+        this.coverages = coverages;
     }
 }

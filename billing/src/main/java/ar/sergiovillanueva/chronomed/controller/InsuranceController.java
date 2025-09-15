@@ -1,14 +1,15 @@
 package ar.sergiovillanueva.chronomed.controller;
 
+import ar.sergiovillanueva.chronomed.dto.InsuranceDetailResponse;
+import ar.sergiovillanueva.chronomed.dto.InsuranceResponse;
+import ar.sergiovillanueva.chronomed.dto.PageResponse;
 import ar.sergiovillanueva.chronomed.dto.SelectEntityResponse;
 import ar.sergiovillanueva.chronomed.service.InsuranceService;
 import ar.sergiovillanueva.chronomed.service.InsuranceTypeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,10 +25,29 @@ public class InsuranceController {
         this.insuranceTypeService = insuranceTypeService;
     }
 
-    @GetMapping("/type/{insuranceTypeId}")
-    public List<SelectEntityResponse> getInsurancesByType(@PathVariable Long insuranceTypeId) {
+    @GetMapping
+    public PageResponse<InsuranceResponse> getInsurances(
+            @RequestParam(defaultValue = "") String name,
+            @RequestParam(defaultValue = "0") int page
+    ) {
+        log.debug("GET request to getInsurances");
+        return insuranceService.findInsurances(name, page);
+    }
+
+    @GetMapping("/all")
+    public List<SelectEntityResponse> getInsurancesByType(@RequestParam Long insuranceTypeId) {
         log.debug("GET request to getInsurancesByType");
         return insuranceService.findAllByInsuranceTypeId(insuranceTypeId);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<InsuranceDetailResponse> getOne(@PathVariable Long id) {
+        log.debug("GET request to getInsurance by id");
+        try {
+            return ResponseEntity.ok(insuranceService.getOne(id));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/types/all")

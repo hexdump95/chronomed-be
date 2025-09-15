@@ -75,6 +75,12 @@
             <artifactId>hibernate-spatial</artifactId>
             <version>7.1.0.Final</version>
         </dependency>
+
+        <dependency>
+            <groupId>ar.sergiovillanueva</groupId>
+            <artifactId>shared</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

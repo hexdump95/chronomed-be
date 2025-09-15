@@ -1,8 +1,10 @@
 package ar.sergiovillanueva.chronomed.controller;
 
 import ar.sergiovillanueva.chronomed.dto.*;
+import ar.sergiovillanueva.chronomed.service.InsuranceCoverageService;
 import ar.sergiovillanueva.chronomed.service.InsuranceService;
 import ar.sergiovillanueva.chronomed.service.InsuranceTypeService;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +19,12 @@ public class InsuranceController {
     private final Logger log = LoggerFactory.getLogger(InsuranceController.class);
     private final InsuranceService insuranceService;
     private final InsuranceTypeService insuranceTypeService;
+    private final InsuranceCoverageService insuranceCoverageService;
 
-    public InsuranceController(InsuranceService insuranceService, InsuranceTypeService insuranceTypeService) {
+    public InsuranceController(InsuranceService insuranceService, InsuranceTypeService insuranceTypeService, InsuranceCoverageService insuranceCoverageService) {
         this.insuranceService = insuranceService;
         this.insuranceTypeService = insuranceTypeService;
+        this.insuranceCoverageService = insuranceCoverageService;
     }
 
     @GetMapping
@@ -71,6 +75,26 @@ public class InsuranceController {
         try {
             insuranceService.delete(id);
             return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PostMapping("/{insuranceId}/coverages")
+    public ResponseEntity<InsuranceCoverageResponse> createInsuranceCoverage(
+            @PathVariable Long insuranceId,
+            @Valid @RequestBody InsuranceCoverageRequest request
+    ) {
+        log.debug("POST request to createInsuranceCoverage for insurance {}", insuranceId);
+        var coverage = insuranceCoverageService.save(insuranceId, request);
+        return ResponseEntity.created(URI.create("/api/v1/insurances/coverages/" + insuranceId)).body(coverage);
+    }
+
+    @GetMapping("/coverages/{id}")
+    public ResponseEntity<InsuranceCoverageResponse> getInsuranceCoverage(@PathVariable Long id) {
+        log.debug("GET request to getInsuranceCoverage id {}", id);
+        try {
+            return ResponseEntity.ok(insuranceCoverageService.getOne(id));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }

@@ -16,6 +16,7 @@ spring:
 logging:
   level:
     ar.sergiovillanueva.chronomed: DEBUG
+    org.springframework.security: DEBUG
 
 springdoc:
   swagger-ui:
@@ -33,3 +34,8 @@ httpclient:
         client-id: admin-cli
         username: admin
         password: secret
+
+authservice:
+  resource-client: chronomed
+  staff-url: http://localhost:8080/realms/chronomed-staff
+  portal-url: http://localhost:8080/realms/chronomed-patient

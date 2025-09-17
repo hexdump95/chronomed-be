@@ -33,6 +33,9 @@ public class Account {
     )
     private List<AccountSpecialty> specialties = new ArrayList<>();
 
+    @Column(name = "locality_id")
+    private Long localityId;
+
     public UUID getUserId() {
         return userId;
     }
@@ -71,5 +74,13 @@ public class Account {
 
     public void setSpecialties(List<AccountSpecialty> specialties) {
         this.specialties = specialties;
+    }
+
+    public Long getLocalityId() {
+        return localityId;
+    }
+
+    public void setLocalityId(Long localityId) {
+        this.localityId = localityId;
     }
 }

@@ -1,7 +1,6 @@
 package ar.sergiovillanueva.chronomed.service;
 
 import ar.sergiovillanueva.chronomed.dto.*;
-import ar.sergiovillanueva.chronomed.entity.Account;
 import ar.sergiovillanueva.chronomed.mapper.AccountMapper;
 import ar.sergiovillanueva.chronomed.repository.AccountRepository;
 import org.slf4j.Logger;
@@ -18,12 +17,14 @@ public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final SpecialtyLookupService specialtyLookupService;
     private final FacilityLookupService facilityLookupService;
+    private final AccountSyncService profileSyncService;
 
-    public AccountServiceImpl(AuthService authService, AccountRepository accountRepository, SpecialtyLookupService specialtyLookupService, FacilityLookupService facilityLookupService) {
+    public AccountServiceImpl(AuthService authService, AccountRepository accountRepository, SpecialtyLookupService specialtyLookupService, FacilityLookupService facilityLookupService, AccountSyncService profileSyncService) {
         this.authService = authService;
         this.accountRepository = accountRepository;
         this.specialtyLookupService = specialtyLookupService;
         this.facilityLookupService = facilityLookupService;
+        this.profileSyncService = profileSyncService;
     }
 
     @Override
@@ -31,7 +32,7 @@ public class AccountServiceImpl implements AccountService {
     public AccountResponse findByUserId(UUID id) {
         var accountOpt = accountRepository.findById(id);
         var keycloakUser = authService.getUserById(id);
-        var account = accountOpt.orElseGet(() -> synchronizeBEAccount(keycloakUser));
+        var account = accountOpt.orElseGet(() -> profileSyncService.synchronizeBEAccount(keycloakUser));
         return AccountMapper.accountToAccountResponse(account, new AccountResponse());
     }
 
@@ -59,13 +60,6 @@ public class AccountServiceImpl implements AccountService {
         AccountMapper.accountUpdateRequestToAccount(request, account);
         accountRepository.save(account);
         return AccountMapper.accountToAccountResponse(account, new AccountResponse());
-    }
-
-    private Account synchronizeBEAccount(KeycloakUser kcUser) {
-        var account = new Account();
-        account.setUserId(kcUser.getId());
-        accountRepository.save(account);
-        return account;
     }
 
 }

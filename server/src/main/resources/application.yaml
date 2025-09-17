@@ -26,7 +26,7 @@ httpclient:
   keycloak:
     url: http://localhost:8080
     chronomed:
-      client-id: chronomed-admin
+      client-id: chronomed-staff
       client-uuid: 9eb859c4-3ded-40f4-83d8-ce8b1dbc8242
     admincli:
       token:

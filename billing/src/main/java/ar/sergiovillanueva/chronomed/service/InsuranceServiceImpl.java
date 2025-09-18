@@ -18,7 +18,7 @@ import java.time.Instant;
 import java.util.List;
 
 @Service
-public class InsuranceServiceImpl implements InsuranceService {
+public class InsuranceServiceImpl implements InsuranceService, InsuranceLookupService {
     private final Logger log = LoggerFactory.getLogger(InsuranceServiceImpl.class);
     private final InsuranceRepository insuranceRepository;
     private final ObjectMapper objectMapper;
@@ -104,4 +104,15 @@ public class InsuranceServiceImpl implements InsuranceService {
         insurance.setDeletedAt(Instant.now());
         insuranceRepository.save(insurance);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean verifyExistingIds(List<Long> ids) {
+        log.debug("Verify existing insurances with ids: {}", ids);
+        var specification = InsuranceSpecification.byDeletedAtNull();
+        specification = specification.and(InsuranceSpecification.byIds(ids));
+        long count = insuranceRepository.count(specification);
+        return ids.size() == count;
+    }
+
 }

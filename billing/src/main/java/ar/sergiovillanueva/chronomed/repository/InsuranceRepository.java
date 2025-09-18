@@ -15,4 +15,6 @@ public interface InsuranceRepository extends JpaRepository<Insurance, Long> {
     Page<Insurance> findAll(Specification<Insurance> specification, Pageable pageable);
 
     List<Insurance> findAll(Specification<Insurance> specification, Sort sort);
+
+    long count(Specification<Insurance> specification);
 }

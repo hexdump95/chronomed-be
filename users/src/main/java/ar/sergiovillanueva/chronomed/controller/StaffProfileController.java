@@ -9,6 +9,8 @@ import ar.sergiovillanueva.chronomed.utils.JwtUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/profile")
 public class StaffProfileController {
@@ -29,6 +31,27 @@ public class StaffProfileController {
     public ResponseEntity<Void> updateProfile(@RequestBody ProfileRequest request) {
         try {
             profileService.updateProfile(JwtUtils.extractUserId(), request);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @RolesRequired({AuthRole.ADMIN, AuthRole.DOCTOR})
+    @GetMapping("/insurances")
+    public ResponseEntity<List<Long>> getInsurances() {
+        try {
+            return ResponseEntity.ok(profileService.getInsuranceIds(JwtUtils.extractUserId()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @RolesRequired({AuthRole.ADMIN, AuthRole.DOCTOR})
+    @PutMapping("/insurances")
+    public ResponseEntity<Void> updateInsurances(@RequestBody List<Long> insuranceIds) {
+        try {
+            profileService.updateInsurances(JwtUtils.extractUserId(), insuranceIds);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

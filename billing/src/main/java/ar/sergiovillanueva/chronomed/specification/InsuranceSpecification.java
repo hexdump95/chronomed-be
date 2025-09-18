@@ -8,6 +8,8 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.List;
+
 public class InsuranceSpecification {
     public static Specification<Insurance> byDeletedAtNull() {
         return (root, query, criteriaBuilder) -> root.get(Insurance_.deletedAt).isNull();
@@ -34,4 +36,9 @@ public class InsuranceSpecification {
             return criteriaBuilder.conjunction();
         };
     }
+
+    public static Specification<Insurance> byIds(List<Long> ids) {
+        return (root, query, criteriaBuilder) -> root.get(Insurance_.id).in(ids);
+    }
+
 }

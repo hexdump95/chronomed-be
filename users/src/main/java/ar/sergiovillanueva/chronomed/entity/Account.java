@@ -36,6 +36,9 @@ public class Account {
     @Column(name = "locality_id")
     private Long localityId;
 
+    @Column(name = "insurance_ids")
+    private List<Long> insuranceIds = new ArrayList<>();
+
     public UUID getUserId() {
         return userId;
     }
@@ -82,5 +85,13 @@ public class Account {
 
     public void setLocalityId(Long localityId) {
         this.localityId = localityId;
+    }
+
+    public List<Long> getInsuranceIds() {
+        return insuranceIds;
+    }
+
+    public void setInsuranceIds(List<Long> insuranceIds) {
+        this.insuranceIds = insuranceIds;
     }
 }

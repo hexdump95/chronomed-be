@@ -4,6 +4,7 @@ import ar.sergiovillanueva.chronomed.config.AuthRole;
 import ar.sergiovillanueva.chronomed.dto.AvailabilityDetailResponse;
 import ar.sergiovillanueva.chronomed.dto.AvailabilityRequest;
 import ar.sergiovillanueva.chronomed.dto.AvailabilityResponse;
+import ar.sergiovillanueva.chronomed.dto.AvailabilityUpdateRequest;
 import ar.sergiovillanueva.chronomed.security.RolesRequired;
 import ar.sergiovillanueva.chronomed.service.AvailabilityService;
 import ar.sergiovillanueva.chronomed.utils.JwtUtils;
@@ -39,7 +40,7 @@ public class AvailabilityController {
     @RolesRequired({AuthRole.ADMIN, AuthRole.DOCTOR})
     @GetMapping("/{id}")
     public ResponseEntity<AvailabilityDetailResponse> getAvailability(@PathVariable Long id) {
-        log.debug("GET request to getAvailability by id: {}", id);
+        log.debug("GET request to getAvailability");
         try {
             return ResponseEntity.ok(availabilityService.getAvailabilityByIdAndUserId(id, JwtUtils.extractUserId()));
         } catch (Exception e) {
@@ -51,9 +52,21 @@ public class AvailabilityController {
     @RolesRequired({AuthRole.ADMIN, AuthRole.DOCTOR})
     @PostMapping
     public ResponseEntity<Void> createAvailability(@RequestBody AvailabilityRequest request) {
-        log.debug("POST request to createAvailability {}", request);
+        log.debug("POST request to createAvailability");
         try {
             availabilityService.createAvailability(JwtUtils.extractUserId(), request);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @RolesRequired({AuthRole.ADMIN, AuthRole.DOCTOR})
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateAvailabilityDays(@PathVariable Long id, @RequestBody AvailabilityUpdateRequest request) {
+        log.debug("PUT request to updateAvailability");
+        try {
+            availabilityService.updateAvailabilityDaysByUserId(id, JwtUtils.extractUserId(), request);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

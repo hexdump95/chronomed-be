@@ -18,7 +18,7 @@ public class AvailabilityDay extends BaseEntity {
     @Column(name = "facility_id")
     private Long facilityId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Day day;
 
     public Long getId() {

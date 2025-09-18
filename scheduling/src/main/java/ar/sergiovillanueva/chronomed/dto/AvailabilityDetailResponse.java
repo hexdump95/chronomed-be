@@ -3,19 +3,18 @@ package ar.sergiovillanueva.chronomed.dto;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class AvailabilityDetailResponse {
-    private UUID id;
+    private Long id;
     private Instant validFrom;
     private Instant validTo;
     private List<AvailabilityDayResponse> availabilityDays = new ArrayList<>();
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -1,6 +1,7 @@
 package ar.sergiovillanueva.chronomed.controller;
 
 import ar.sergiovillanueva.chronomed.config.AuthRole;
+import ar.sergiovillanueva.chronomed.dto.AvailabilityDetailResponse;
 import ar.sergiovillanueva.chronomed.dto.AvailabilityRequest;
 import ar.sergiovillanueva.chronomed.dto.AvailabilityResponse;
 import ar.sergiovillanueva.chronomed.security.RolesRequired;
@@ -31,7 +32,18 @@ public class AvailabilityController {
             return ResponseEntity.ok(availabilityService.getAvailabilitiesByUserId(JwtUtils.extractUserId()));
         } catch (Exception e) {
             log.debug(e.getMessage());
-            log.debug(e.getLocalizedMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @RolesRequired({AuthRole.ADMIN, AuthRole.DOCTOR})
+    @GetMapping("/{id}")
+    public ResponseEntity<AvailabilityDetailResponse> getAvailability(@PathVariable Long id) {
+        log.debug("GET request to getAvailability by id: {}", id);
+        try {
+            return ResponseEntity.ok(availabilityService.getAvailabilityByIdAndUserId(id, JwtUtils.extractUserId()));
+        } catch (Exception e) {
+            log.debug(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }

@@ -1,5 +1,6 @@
 package ar.sergiovillanueva.chronomed.service;
 
+import ar.sergiovillanueva.chronomed.dto.AvailabilityDetailResponse;
 import ar.sergiovillanueva.chronomed.dto.AvailabilityRequest;
 import ar.sergiovillanueva.chronomed.dto.AvailabilityResponse;
 import ar.sergiovillanueva.chronomed.entity.Availability;
@@ -39,6 +40,17 @@ public class AvailabilityServiceImpl implements AvailabilityService {
                     return availabilityResponse;
                 })
                 .toList();
+    }
+
+    @Override
+    public AvailabilityDetailResponse getAvailabilityByIdAndUserId(Long id, String userId) {
+        log.debug("get availability by id {} and user id {}", id, userId);
+        var specification =  AvailabilitySpecification.byId(id);
+        specification = specification.and(AvailabilitySpecification.byUserId(UUID.fromString(userId)));
+
+        var availability = availabilityRepository.findOne(specification)
+                .orElseThrow(() -> new NotFoundServiceException("availability not found"));
+        return objectMapper.convertValue(availability, AvailabilityDetailResponse.class);
     }
 
     @Override

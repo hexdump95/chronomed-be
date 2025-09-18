@@ -16,5 +16,7 @@ public interface AuthService {
 
     KeycloakUser updateUser(UUID id, KeycloakUserUpdateRequest request);
 
+    void updateEmail(UUID id, String email);
+
     List<KeycloakRole> getRoles();
 }

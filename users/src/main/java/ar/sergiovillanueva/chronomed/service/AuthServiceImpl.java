@@ -129,6 +129,18 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public void updateEmail(UUID id, String email) {
+        var keycloakUserEmail = new KeycloakUpdateUserEmail();
+        keycloakUserEmail.setEmail(email);
+        var url = keycloakUrl + "/admin/realms/" + chronomedConfig.getClientId() + "/users/" + id;
+        var requestEntity = new HttpEntity<>(keycloakUserEmail, getKeycloakAdminCliJwtHeader());
+        var countResponse = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, Void.class);
+        if (countResponse.getStatusCode() != HttpStatus.NO_CONTENT) {
+            throw new KeycloakServiceException();
+        }
+    }
+
+    @Override
     public List<KeycloakRole> getRoles() {
         var url = keycloakUrl + "/admin/realms/" + chronomedConfig.getClientId() + "/clients/" + chronomedConfig.getClientUuid() + "/roles";
         var requestEntity = new HttpEntity<>(null, getKeycloakAdminCliJwtHeader());

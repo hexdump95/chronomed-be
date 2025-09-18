@@ -28,7 +28,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public AccountResponse findByUserId(UUID id) {
         var accountOpt = accountRepository.findById(id);
         var keycloakUser = authService.getUserById(id);
@@ -39,6 +39,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     public AccountResponse updateAccount(UUID id, AccountUpdateRequest request) {
+        log.debug("Updating account with id {}", id);
         var account = accountRepository.findById(id).orElseThrow(() -> new NotFoundServiceException("account not found"));
 
         if (!request.getFacilityIds().isEmpty()) {
@@ -56,7 +57,6 @@ public class AccountServiceImpl implements AccountService {
                 throw new RuntimeException("error with specialty lookup");
             }
         }
-
         AccountMapper.accountUpdateRequestToAccount(request, account);
         accountRepository.save(account);
         return AccountMapper.accountToAccountResponse(account, new AccountResponse());

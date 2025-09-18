@@ -3,6 +3,9 @@ package ar.sergiovillanueva.chronomed.service;
 import ar.sergiovillanueva.chronomed.dto.AvailabilityRequest;
 import ar.sergiovillanueva.chronomed.dto.AvailabilityResponse;
 
+import java.util.List;
+
 public interface AvailabilityService {
-    AvailabilityResponse createAvailability(String userId, AvailabilityRequest request);
+    List<AvailabilityResponse> getAvailabilitiesByUserId(String userId);
+    void createAvailability(String userId, AvailabilityRequest request);
 }

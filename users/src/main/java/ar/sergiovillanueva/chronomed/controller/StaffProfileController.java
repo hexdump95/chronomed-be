@@ -1,11 +1,9 @@
 package ar.sergiovillanueva.chronomed.controller;
 
 import ar.sergiovillanueva.chronomed.config.AuthRole;
-import ar.sergiovillanueva.chronomed.dto.AvailabilityRequest;
 import ar.sergiovillanueva.chronomed.dto.ProfileRequest;
 import ar.sergiovillanueva.chronomed.dto.ProfileResponse;
 import ar.sergiovillanueva.chronomed.security.RolesRequired;
-import ar.sergiovillanueva.chronomed.service.AvailabilityService;
 import ar.sergiovillanueva.chronomed.service.StaffProfileService;
 import ar.sergiovillanueva.chronomed.utils.JwtUtils;
 import org.slf4j.Logger;
@@ -20,11 +18,9 @@ import java.util.List;
 public class StaffProfileController {
     private final Logger log = LoggerFactory.getLogger(StaffProfileController.class);
     private final StaffProfileService profileService;
-    private final AvailabilityService availabilityService;
 
-    public StaffProfileController(StaffProfileService profileService, AvailabilityService availabilityService) {
+    public StaffProfileController(StaffProfileService profileService) {
         this.profileService = profileService;
-        this.availabilityService = availabilityService;
     }
 
     @RolesRequired({AuthRole.ADMIN, AuthRole.DOCTOR, AuthRole.RECEPTIONIST})
@@ -63,18 +59,6 @@ public class StaffProfileController {
         log.debug("PUT request to update insurances {}", insuranceIds);
         try {
             profileService.updateInsurances(JwtUtils.extractUserId(), insuranceIds);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
-    @RolesRequired({AuthRole.ADMIN, AuthRole.DOCTOR})
-    @PostMapping("/availabilities")
-    public ResponseEntity<Void> createAvailability(@RequestBody AvailabilityRequest request) {
-        log.debug("POST request to createAvailability {}", request);
-        try {
-            availabilityService.createAvailability(JwtUtils.extractUserId(), request);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();

@@ -1,14 +1,11 @@
 package ar.sergiovillanueva.chronomed.dto;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AvailabilityResponse {
     private Long id;
     private Instant validFrom;
     private Instant validTo;
-    private List<AvailabilityDayResponse> availabilityDays = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -34,11 +31,4 @@ public class AvailabilityResponse {
         this.validTo = validTo;
     }
 
-    public List<AvailabilityDayResponse> getAvailabilityDays() {
-        return availabilityDays;
-    }
-
-    public void setAvailabilityDays(List<AvailabilityDayResponse> availabilityDays) {
-        this.availabilityDays = availabilityDays;
-    }
 }

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Table(name = "availability")
 @Entity
@@ -19,9 +20,8 @@ public class Availability extends BaseEntity {
     @Column(name = "valid_to")
     private Instant validTo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
-    private Account account;
+    private UUID accountId;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinTable(
@@ -55,12 +55,12 @@ public class Availability extends BaseEntity {
         this.validTo = validTo;
     }
 
-    public Account getAccount() {
-        return account;
+    public UUID getAccountId() {
+        return accountId;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
+    public void setAccountId(UUID accountId) {
+        this.accountId = accountId;
     }
 
     public List<AvailabilityDay> getAvailabilityDays() {

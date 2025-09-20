@@ -3,6 +3,8 @@ package ar.sergiovillanueva.chronomed.entity;
 import jakarta.persistence.*;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Table(name = "patient")
@@ -35,6 +37,14 @@ public class Patient extends BaseEntity {
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "patient")
     private Domicile domicile;
+
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinTable(
+            name = "patient_patient_comorbidity",
+            joinColumns = @JoinColumn(name = "patient_id"),
+            inverseJoinColumns = @JoinColumn(name = "patient_comorbidity_id")
+    )
+    private List<PatientComorbidity> patientComorbidities = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {
@@ -103,6 +113,14 @@ public class Patient extends BaseEntity {
 
     public void setDomicile(Domicile domicile) {
         this.domicile = domicile;
+    }
+
+    public List<PatientComorbidity> getPatientComorbidities() {
+        return patientComorbidities;
+    }
+
+    public void setPatientComorbidities(List<PatientComorbidity> patientComorbidities) {
+        this.patientComorbidities = patientComorbidities;
     }
 
 }

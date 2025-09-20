@@ -15,7 +15,7 @@ import java.time.Instant;
 import java.util.List;
 
 @Component
-public class ComorbidityServiceImpl implements ComorbidityService {
+public class ComorbidityServiceImpl implements ComorbidityService, ComorbidityLookupService {
     private final Logger log = LoggerFactory.getLogger(ComorbidityServiceImpl.class);
     private final ComorbidityRepository comorbidityRepository;
     private static final Short PAGE_SIZE = 10;
@@ -96,4 +96,16 @@ public class ComorbidityServiceImpl implements ComorbidityService {
         comorbidity.setDeletedAt(Instant.now());
         comorbidityRepository.save(comorbidity);
     }
+
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean verifyExistingIds(List<Long> ids) {
+        log.debug("Verify existing comorbidities with ids: {}", ids);
+        var specification = ComorbiditySpecification.byDeletedAtNull();
+        specification = specification.and(ComorbiditySpecification.byIds(ids));
+        long count = comorbidityRepository.count(specification);
+        return ids.size() == count;
+    }
+
 }

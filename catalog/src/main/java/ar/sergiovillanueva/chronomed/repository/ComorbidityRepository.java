@@ -14,4 +14,6 @@ public interface ComorbidityRepository extends JpaRepository<Comorbidity, Long> 
     List<Comorbidity> findAll(Specification<Comorbidity> specification);
 
     Page<Comorbidity> findAll(Specification<Comorbidity> specification, Pageable pageable);
+
+    long count(Specification<Comorbidity> specification);
 }

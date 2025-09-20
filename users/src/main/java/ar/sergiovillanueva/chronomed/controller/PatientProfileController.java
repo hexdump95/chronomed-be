@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/patient")
 public class PatientProfileController {
@@ -23,6 +25,7 @@ public class PatientProfileController {
 
     @GetMapping
     public ResponseEntity<PatientDetailResponse> getPatientProfile() {
+        log.debug("GET request to getPatientProfile");
         try {
             return ResponseEntity.ok(patientProfileService.getProfile(JwtUtils.extractUserId()));
         } catch (Exception e) {
@@ -33,6 +36,7 @@ public class PatientProfileController {
 
     @PutMapping
     public ResponseEntity<Void> updatePatientProfile(@RequestBody PatientRequest request) {
+        log.debug("PUT request to updatePatientProfile");
         try {
             patientProfileService.updateProfile(JwtUtils.extractUserId(), request);
             return ResponseEntity.noContent().build();
@@ -44,6 +48,7 @@ public class PatientProfileController {
 
     @GetMapping("/domicile")
     public ResponseEntity<DomicileResponse> getDomicile() {
+        log.debug("GET request to getDomicile");
         try {
             return ResponseEntity.ok(domicileService.getDomicile(JwtUtils.extractUserId()));
         } catch (Exception e) {
@@ -54,8 +59,32 @@ public class PatientProfileController {
 
     @PutMapping("/domicile")
     public ResponseEntity<Void> updateDomicile(@RequestBody DomicileRequest request) {
+        log.debug("PUT request to updateDomicile");
         try {
             domicileService.updateDomicile(JwtUtils.extractUserId(), request);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            log.debug(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/comorbidities")
+    public ResponseEntity<List<Long>> getComorbidities() {
+        log.debug("GET request to getComorbidities");
+        try {
+            return ResponseEntity.ok(patientProfileService.getComorbidities(JwtUtils.extractUserId()));
+        } catch (Exception e) {
+            log.debug(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PutMapping("/comorbidities")
+    public ResponseEntity<Void> updateComorbidities(@RequestBody List<Long> comorbidityIds) {
+        log.debug("PUT request to updateComorbidities");
+        try {
+            patientProfileService.updateComorbidities(JwtUtils.extractUserId(), comorbidityIds);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             log.debug(e.getMessage());

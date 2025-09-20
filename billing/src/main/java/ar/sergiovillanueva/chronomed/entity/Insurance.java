@@ -28,7 +28,7 @@ public class Insurance extends BaseEntity {
     @Column(name = "deleted_at")
     private Instant deletedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private InsuranceType insuranceType;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "insurance", cascade = CascadeType.ALL, orphanRemoval = true)

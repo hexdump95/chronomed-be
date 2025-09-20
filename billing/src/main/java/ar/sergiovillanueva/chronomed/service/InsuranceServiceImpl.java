@@ -6,7 +6,6 @@ import ar.sergiovillanueva.chronomed.entity.Insurance_;
 import ar.sergiovillanueva.chronomed.mapper.InsuranceMapper;
 import ar.sergiovillanueva.chronomed.repository.InsuranceRepository;
 import ar.sergiovillanueva.chronomed.specification.InsuranceSpecification;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -21,12 +20,10 @@ import java.util.List;
 public class InsuranceServiceImpl implements InsuranceService, InsuranceLookupService {
     private final Logger log = LoggerFactory.getLogger(InsuranceServiceImpl.class);
     private final InsuranceRepository insuranceRepository;
-    private final ObjectMapper objectMapper;
     private static final Short PAGE_SIZE = 10;
 
-    public InsuranceServiceImpl(InsuranceRepository insuranceRepository, ObjectMapper objectMapper) {
+    public InsuranceServiceImpl(InsuranceRepository insuranceRepository) {
         this.insuranceRepository = insuranceRepository;
-        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -59,7 +56,12 @@ public class InsuranceServiceImpl implements InsuranceService, InsuranceLookupSe
         specification = specification.and(InsuranceSpecification.fetchInsuranceType());
         specification = specification.and(InsuranceSpecification.byInsuranceTypeId(insuranceTypeId));
         var insurances = insuranceRepository.findAll(specification, sort);
-        return objectMapper.convertValue(insurances, objectMapper.getTypeFactory().constructCollectionType(List.class, SelectEntityResponse.class));
+        return insurances.stream().map(x -> {
+            var response = new SelectEntityResponse();
+            response.setId(x.getId());
+            response.setName(x.getName());
+            return response;
+        }).toList();
     }
 
     @Override

@@ -1,11 +1,10 @@
 package ar.sergiovillanueva.chronomed.service;
 
 import ar.sergiovillanueva.chronomed.dto.PatientDetailResponse;
+import ar.sergiovillanueva.chronomed.dto.PatientInsuranceRequest;
+import ar.sergiovillanueva.chronomed.dto.PatientInsuranceResponse;
 import ar.sergiovillanueva.chronomed.dto.PatientRequest;
-import ar.sergiovillanueva.chronomed.entity.DocumentType;
-import ar.sergiovillanueva.chronomed.entity.PatientComorbidity;
-import ar.sergiovillanueva.chronomed.entity.SelfPerceivedIdentity;
-import ar.sergiovillanueva.chronomed.entity.Sex;
+import ar.sergiovillanueva.chronomed.entity.*;
 import ar.sergiovillanueva.chronomed.repository.PatientRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,12 +21,14 @@ public class PatientProfileServiceImpl implements PatientProfileService {
     private final PatientAuthService patientAuthService;
     private final PatientSyncService patientSyncService;
     private final ComorbidityLookupService comorbidityLookupService;
+    private final InsuranceLookupService insuranceLookupService;
 
-    public PatientProfileServiceImpl(PatientRepository patientRepository, PatientAuthService patientAuthService, PatientSyncService patientSyncService, ComorbidityLookupService comorbidityLookupService) {
+    public PatientProfileServiceImpl(PatientRepository patientRepository, PatientAuthService patientAuthService, PatientSyncService patientSyncService, ComorbidityLookupService comorbidityLookupService, InsuranceLookupService insuranceLookupService) {
         this.patientRepository = patientRepository;
         this.patientAuthService = patientAuthService;
         this.patientSyncService = patientSyncService;
         this.comorbidityLookupService = comorbidityLookupService;
+        this.insuranceLookupService = insuranceLookupService;
     }
 
     @Override
@@ -99,6 +100,40 @@ public class PatientProfileServiceImpl implements PatientProfileService {
         }).toList();
         patient.getPatientComorbidities().clear();
         patient.getPatientComorbidities().addAll(comorbidities);
+        patientRepository.save(patient);
+    }
+
+    @Override
+    public List<PatientInsuranceResponse> getInsurances(String patientId) {
+        log.debug("get insurances for patient {}", patientId);
+        var patient = patientRepository.findById(UUID.fromString(patientId))
+                .orElseThrow(() -> new NotFoundServiceException("patient not found"));
+        return patient.getPatientInsurances().stream().map(i -> {
+            var response = new PatientInsuranceResponse();
+            response.setAffiliateNumber(i.getAffiliateNumber());
+            response.setInsuranceId(i.getInsuranceId());
+            return response;
+        }).toList();
+    }
+
+    @Override
+    public void updateInsurances(String patientId, List<PatientInsuranceRequest> requestList) {
+        log.debug("update insurances for patient {}", patientId);
+        var patient = patientRepository.findById(UUID.fromString(patientId))
+                .orElseThrow(() -> new NotFoundServiceException("patient not found"));
+        var existingInsurances = insuranceLookupService.verifyExistingIds(requestList.stream().map(PatientInsuranceRequest::getInsuranceId).toList());
+        if (!existingInsurances) {
+            log.debug("insurance lookup failed");
+            throw new RuntimeException("error with insurance lookup");
+        }
+        var insurances = requestList.stream().map(i -> {
+            var insurance = new PatientInsurance();
+            insurance.setAffiliateNumber(i.getAffiliateNumber());
+            insurance.setInsuranceId(i.getInsuranceId());
+            return insurance;
+        }).toList();
+        patient.getPatientInsurances().clear();
+        patient.getPatientInsurances().addAll(insurances);
         patientRepository.save(patient);
     }
 }

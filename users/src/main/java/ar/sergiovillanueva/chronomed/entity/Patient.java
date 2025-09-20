@@ -46,6 +46,14 @@ public class Patient extends BaseEntity {
     )
     private List<PatientComorbidity> patientComorbidities = new ArrayList<>();
 
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinTable(
+            name = "patient_patient_insurance",
+            joinColumns = @JoinColumn(name = "patient_id"),
+            inverseJoinColumns = @JoinColumn(name = "patient_insurance_id")
+    )
+    private List<PatientInsurance> patientInsurances = new ArrayList<>();
+
     @PrePersist
     public void prePersist() {
         createdAt = Instant.now();
@@ -123,4 +131,11 @@ public class Patient extends BaseEntity {
         this.patientComorbidities = patientComorbidities;
     }
 
+    public List<PatientInsurance> getPatientInsurances() {
+        return patientInsurances;
+    }
+
+    public void setPatientInsurances(List<PatientInsurance> patientInsurances) {
+        this.patientInsurances = patientInsurances;
+    }
 }

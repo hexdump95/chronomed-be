@@ -92,4 +92,27 @@ public class PatientProfileController {
         }
     }
 
+    @GetMapping("/insurances")
+    public ResponseEntity<List<PatientInsuranceResponse>> getInsurances() {
+        log.debug("GET request to getInsurances");
+        try {
+            return ResponseEntity.ok(patientProfileService.getInsurances(JwtUtils.extractUserId()));
+        } catch (Exception e) {
+            log.debug(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PutMapping("/insurances")
+    public ResponseEntity<Void> updateInsurances(@RequestBody List<PatientInsuranceRequest> request) {
+        log.debug("PUT request to updateInsurances");
+        try {
+            patientProfileService.updateInsurances(JwtUtils.extractUserId(), request);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            log.debug(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
 }

@@ -4,8 +4,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "httpclient.keycloak.staff.admincli.token")
-public class KeycloakAdminCliConfig {
+@ConfigurationProperties(prefix = "httpclient.keycloak.portal.admincli.token")
+public class KeycloakPatientAdminCliConfig {
     private String clientId;
     private String username;
     private String password;

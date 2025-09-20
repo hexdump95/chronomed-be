@@ -24,16 +24,30 @@ springdoc:
 
 httpclient:
   keycloak:
-    url: http://localhost:8080
-    chronomed:
-      client-id: chronomed-staff
-      client-uuid: 9eb859c4-3ded-40f4-83d8-ce8b1dbc8242
-    admincli:
-      token:
-        grant-type: password
-        client-id: admin-cli
-        username: admin
-        password: secret
+    staff:
+      chronomed:
+        client-id: chronomed-staff
+        client-uuid: 5b475065-2e12-4727-8fe0-8e8e996f811d
+        url: http://localhost:8080/admin/realms/chronomed-staff
+      admincli:
+        token:
+          grant-type: password
+          client-id: admin-cli
+          username: admin
+          password: secret
+          url: http://localhost:8080/realms/master/protocol/openid-connect/token
+    portal:
+      chronomed:
+        client-id: chronomed-patient
+        client-uuid: e567e005-a36a-4425-a2cd-a371ab1644ec
+        url: http://localhost:8080/admin/realms/chronomed-patient
+      admincli:
+        token:
+          grant-type: password
+          client-id: admin-cli
+          username: admin
+          password: secret
+          url: http://localhost:8080/realms/master/protocol/openid-connect/token
 
 authservice:
   resource-client: chronomed

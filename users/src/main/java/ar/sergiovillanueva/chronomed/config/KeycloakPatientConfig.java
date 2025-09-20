@@ -4,8 +4,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "httpclient.keycloak.staff.chronomed")
-public class KeycloakChronomedConfig {
+@ConfigurationProperties(prefix = "httpclient.keycloak.portal.chronomed")
+public class KeycloakPatientConfig {
     private String clientId;
     private String clientUuid;
     private String url;

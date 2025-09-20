@@ -1,9 +1,10 @@
 package ar.sergiovillanueva.chronomed.service;
 
-import ar.sergiovillanueva.chronomed.config.KeycloakAdminCliConfig;
-import ar.sergiovillanueva.chronomed.config.KeycloakChronomedConfig;
+import ar.sergiovillanueva.chronomed.config.KeycloakPatientAdminCliConfig;
+import ar.sergiovillanueva.chronomed.config.KeycloakPatientConfig;
 import ar.sergiovillanueva.chronomed.dto.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -17,16 +18,16 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class AuthServiceImpl implements AuthService {
+public class PatientAuthServiceImpl implements PatientAuthService {
     private final RestTemplate restTemplate;
-    private final KeycloakAdminCliConfig adminCliConfig;
-    private final KeycloakChronomedConfig chronomedConfig;
+    private final KeycloakPatientAdminCliConfig adminCliConfig;
+    private final KeycloakPatientConfig chronomedConfig;
     private final ObjectMapper objectMapper;
     private static final String BEARER_PREFIX = "Bearer ";
     private static final String TOKEN_ATTRIBUTE_NAME = "access_token";
     private static final Short PAGE_SIZE = 10;
 
-    public AuthServiceImpl(RestTemplate restTemplate, KeycloakAdminCliConfig adminCliConfig, KeycloakChronomedConfig chronomedConfig, ObjectMapper objectMapper) {
+    public PatientAuthServiceImpl(RestTemplate restTemplate, KeycloakPatientAdminCliConfig adminCliConfig, KeycloakPatientConfig chronomedConfig, ObjectMapper objectMapper) {
         this.restTemplate = restTemplate;
         this.adminCliConfig = adminCliConfig;
         this.chronomedConfig = chronomedConfig;

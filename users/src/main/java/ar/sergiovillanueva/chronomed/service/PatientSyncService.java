@@ -1,6 +1,7 @@
 package ar.sergiovillanueva.chronomed.service;
 
 import ar.sergiovillanueva.chronomed.dto.KeycloakUser;
+import ar.sergiovillanueva.chronomed.entity.Domicile;
 import ar.sergiovillanueva.chronomed.entity.Patient;
 import ar.sergiovillanueva.chronomed.repository.PatientRepository;
 import org.springframework.stereotype.Service;
@@ -14,8 +15,11 @@ public class PatientSyncService {
     }
 
     public Patient synchronizeBEAccount(KeycloakUser kcUser) {
+        var domicile = new Domicile();
         var entity = new Patient();
         entity.setId(kcUser.getId());
+        domicile.setPatient(entity);
+        entity.setDomicile(domicile);
         repository.save(entity);
         return entity;
     }

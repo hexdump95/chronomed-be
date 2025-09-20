@@ -1,5 +1,7 @@
 package ar.sergiovillanueva.chronomed.service;
 
+import ar.sergiovillanueva.chronomed.config.KeycloakAdminCliConfig;
+import ar.sergiovillanueva.chronomed.config.KeycloakChronomedConfig;
 import ar.sergiovillanueva.chronomed.dto.KeycloakRole;
 import org.springframework.stereotype.Service;
 
@@ -24,5 +26,23 @@ public class RoleServiceImpl implements RoleService {
                 .filter(kr -> !Objects.equals(kr.getName(), EXCLUDED_ROLE))
                 .toList();
     }
+
+//    @Override
+//    public KeycloakRole saveRole(KeycloakRole request) {
+//        var token = keycloakService.getKeycloakMasterJwt();
+//
+//        var createRoleResponse = keycloakService.createRole(token, request);
+//
+//        if (createRoleResponse.getStatusCode() != HttpStatus.CREATED) {
+//            throw new KeycloakServiceException(HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//
+//        var getRoleByNameResponse = keycloakService.getRolesByName(token, request.getName());
+//
+//        if (getRoleByNameResponse.getBody() == null) {
+//            throw new NotFoundServiceException("Role not found");
+//        }
+//        return getRoleByNameResponse.getBody().getFirst();
+//    }
 
 }

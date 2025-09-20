@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class LocalityServiceImpl implements LocalityService {
+public class LocalityServiceImpl implements LocalityService, LocalityLookupService {
     private final Logger log = LoggerFactory.getLogger(LocalityServiceImpl.class);
     private final LocalityRepository localityRepository;
     private final ObjectMapper objectMapper;
@@ -44,5 +44,11 @@ public class LocalityServiceImpl implements LocalityService {
         localityResponse.setProvinceId(locality.getDistrict().getProvince().getId());
         localityResponse.setProvinceName(locality.getDistrict().getProvince().getName());
         return localityResponse;
+    }
+
+    @Override
+    public boolean verifyExistingId(Long id) {
+        log.debug("Verify existing locality by id {}", id);
+        return localityRepository.existsById(id);
     }
 }

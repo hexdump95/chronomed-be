@@ -3,7 +3,6 @@ package ar.sergiovillanueva.chronomed.entity;
 import jakarta.persistence.*;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.UUID;
 
 @Table(name = "patient")
@@ -33,6 +32,9 @@ public class Patient extends BaseEntity {
 
     @Column(name = "created_at")
     private Instant createdAt;
+
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "patient")
+    private Domicile domicile;
 
     @PrePersist
     public void prePersist() {
@@ -93,6 +95,14 @@ public class Patient extends BaseEntity {
 
     public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Domicile getDomicile() {
+        return domicile;
+    }
+
+    public void setDomicile(Domicile domicile) {
+        this.domicile = domicile;
     }
 
 }

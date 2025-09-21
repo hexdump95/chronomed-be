@@ -28,10 +28,13 @@ public class UserController {
     }
 
     @GetMapping()
-    public ResponseEntity<PageResponse<KeycloakUser>> getUsers(@RequestParam(defaultValue = "0") int page) {
+    public ResponseEntity<PageResponse<KeycloakUser>> getUsers(
+            @RequestParam(defaultValue = "") String search,
+            @RequestParam(defaultValue = "0") int page
+    ) {
         log.info("GET request to getUsers");
         try {
-            return ResponseEntity.ok(authService.getUsers(page));
+            return ResponseEntity.ok(authService.getUsersByName(search, page));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }

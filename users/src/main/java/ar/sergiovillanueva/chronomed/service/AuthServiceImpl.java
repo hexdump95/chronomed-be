@@ -34,15 +34,15 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public PageResponse<KeycloakUser> getUsers(int page) {
-        var url = chronomedConfig.getUrl() + "/users/count";
+    public PageResponse<KeycloakUser> getUsersByName(String search, int page) {
+        var url = chronomedConfig.getUrl() + "/users/count?search=" + search;
         var requestEntity = new HttpEntity<>(null, getKeycloakAdminCliJwtHeader());
         var countResponse = restTemplate.exchange(url, HttpMethod.GET, requestEntity, Long.class);
         if (countResponse.getStatusCode() != HttpStatus.OK || countResponse.getBody() == null) {
             throw new KeycloakServiceException();
         }
 
-        url = chronomedConfig.getUrl() + "/users?max=" + PAGE_SIZE + "&first=" + PAGE_SIZE * page;
+        url = chronomedConfig.getUrl() + "/users?max=" + PAGE_SIZE + "&first=" + PAGE_SIZE * page + "&search=" + search;
         var response = restTemplate.exchange(url, HttpMethod.GET, requestEntity, new ParameterizedTypeReference<List<KeycloakUser>>() {
         });
         if (response.getStatusCode() != HttpStatus.OK) {

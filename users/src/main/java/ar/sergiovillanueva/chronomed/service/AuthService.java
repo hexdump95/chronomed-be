@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface AuthService {
-    PageResponse<KeycloakUser> getUsers(int page);
+    PageResponse<KeycloakUser> getUsersByName(String search, int page);
 
     KeycloakUser getUserById(UUID id);
 

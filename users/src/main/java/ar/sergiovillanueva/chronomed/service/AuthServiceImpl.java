@@ -113,7 +113,7 @@ public class AuthServiceImpl implements AuthService {
                 rolesToAdd.add(reqRole);
         });
         keycloakUserRoles.forEach(role -> {
-            if (!request.getRoles().contains(role))
+            if (!request.getRoles().stream().map(KeycloakRole::getId).toList().contains(role.getId()))
                 rolesToRemove.add(role);
         });
         if (!rolesToAdd.isEmpty())

@@ -4,7 +4,6 @@ import ar.sergiovillanueva.chronomed.config.KeycloakPatientAdminCliConfig;
 import ar.sergiovillanueva.chronomed.config.KeycloakPatientConfig;
 import ar.sergiovillanueva.chronomed.dto.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -114,7 +113,7 @@ public class PatientAuthServiceImpl implements PatientAuthService {
                 rolesToAdd.add(reqRole);
         });
         keycloakUserRoles.forEach(role -> {
-            if (!request.getRoles().contains(role))
+            if (!request.getRoles().stream().map(KeycloakRole::getId).toList().contains(role.getId()))
                 rolesToRemove.add(role);
         });
         if (!rolesToAdd.isEmpty())

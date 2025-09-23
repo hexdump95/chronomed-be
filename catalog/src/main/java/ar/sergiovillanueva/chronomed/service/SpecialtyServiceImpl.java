@@ -2,12 +2,14 @@ package ar.sergiovillanueva.chronomed.service;
 
 import ar.sergiovillanueva.chronomed.dto.*;
 import ar.sergiovillanueva.chronomed.entity.Specialty;
+import ar.sergiovillanueva.chronomed.entity.Specialty_;
 import ar.sergiovillanueva.chronomed.mapper.SpecialtyMapper;
 import ar.sergiovillanueva.chronomed.repository.SpecialtyRepository;
 import ar.sergiovillanueva.chronomed.specification.SpecialtySpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,13 +30,14 @@ public class SpecialtyServiceImpl implements SpecialtyService, SpecialtyLookupSe
     @Transactional(readOnly = true)
     public PageResponse<SpecialtyResponse> findSpecialties(String search, int page) {
         log.debug("Find all specialties with name: {} and page: {}", search, page);
+        Sort sort = Sort.by(Sort.Direction.ASC, Specialty_.name.getName());
         var specification = SpecialtySpecification.byDeletedAtNull();
         if (search != null && !search.isBlank()) {
             specification = specification.and(SpecialtySpecification.byNameLike(search));
         }
 
         var pagedSpecialties = specialtyRepository
-                .findAll(specification, PageRequest.of(page, PAGE_SIZE))
+                .findAll(specification, PageRequest.of(page, PAGE_SIZE, sort))
                 .map(x -> SpecialtyMapper.specialtyToSpecialtyResponse(x, new SpecialtyResponse()));
 
         return new PageResponse.Builder<SpecialtyResponse>()
@@ -49,8 +52,9 @@ public class SpecialtyServiceImpl implements SpecialtyService, SpecialtyLookupSe
     @Transactional(readOnly = true)
     public List<SelectEntityResponse> findAllSpecialties() {
         log.debug("Find all specialties");
+        Sort sort = Sort.by(Sort.Direction.ASC, Specialty_.name.getName());
         var specification = SpecialtySpecification.byDeletedAtNull();
-        var specialties = specialtyRepository.findAll(specification);
+        var specialties = specialtyRepository.findAll(specification, sort);
         return specialties.stream().map(x -> SpecialtyMapper.specialtyToSelectEntityResponse(x, new SelectEntityResponse())).toList();
     }
 

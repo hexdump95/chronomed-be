@@ -26,11 +26,11 @@ public class SpecialtyServiceImpl implements SpecialtyService, SpecialtyLookupSe
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<SpecialtyResponse> findSpecialties(String name, int page) {
-        log.debug("Find all specialties with name: {} and page: {}", name, page);
+    public PageResponse<SpecialtyResponse> findSpecialties(String search, int page) {
+        log.debug("Find all specialties with name: {} and page: {}", search, page);
         var specification = SpecialtySpecification.byDeletedAtNull();
-        if (name != null && !name.isBlank()) {
-            specification = specification.and(SpecialtySpecification.byNameLike(name));
+        if (search != null && !search.isBlank()) {
+            specification = specification.and(SpecialtySpecification.byNameLike(search));
         }
 
         var pagedSpecialties = specialtyRepository

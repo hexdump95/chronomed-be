@@ -27,11 +27,11 @@ public class SpecialtyController {
 
     @GetMapping
     public PageResponse<SpecialtyResponse> getSpecialties(
-            @RequestParam(defaultValue = "") String name,
+            @RequestParam(defaultValue = "") String search,
             @RequestParam(defaultValue = "0") int page
     ) {
         log.debug("GET request to getSpecialties");
-        return specialtyService.findSpecialties(name, page);
+        return specialtyService.findSpecialties(search, page);
     }
 
     @GetMapping("/all")

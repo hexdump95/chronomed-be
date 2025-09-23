@@ -5,7 +5,7 @@ import ar.sergiovillanueva.chronomed.dto.*;
 import java.util.List;
 
 public interface SpecialtyService {
-    PageResponse<SpecialtyResponse> findSpecialties(String name, int page);
+    PageResponse<SpecialtyResponse> findSpecialties(String search, int page);
 
     List<SelectEntityResponse> findAllSpecialties();
 

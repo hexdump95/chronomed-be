@@ -78,7 +78,7 @@ public class SpecialtyController {
         }
     }
 
-    @PostMapping("/{specialtyId}/specialty-prices")
+    @PostMapping("/{specialtyId}/prices")
     public ResponseEntity<SpecialtyPriceResponse> createSpecialtyPrice(
             @PathVariable Long specialtyId,
             @Valid @RequestBody SpecialtyPriceRequest request
@@ -86,19 +86,20 @@ public class SpecialtyController {
         log.debug("POST request to createSpecialtyPrice for specialty {}", specialtyId);
         try {
             var specialty = specialtyPriceService.save(specialtyId, request);
-            return ResponseEntity.created(URI.create("/api/v1/specialties/specialty-prices/" + specialtyId)).body(specialty);
+            return ResponseEntity.created(URI.create("/api/v1/specialties/prices/" + specialtyId)).body(specialty);
         } catch (Exception e) {
             log.debug(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }
 
-    @GetMapping("/specialty-prices/{id}")
+    @GetMapping("/prices/{id}")
     public ResponseEntity<SpecialtyPriceResponse> getSpecialtyPrice(@PathVariable Long id) {
         log.debug("GET request to getSpecialtyPrice for specialty {}", id);
         try {
             return ResponseEntity.ok(specialtyPriceService.getSpecialtyPrice(id));
         } catch (Exception e) {
+            log.debug(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }

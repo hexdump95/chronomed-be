@@ -13,19 +13,20 @@ public class InstantRangeRequest {
 
     private Instant validTo;
 
+
     public Instant getValidFrom() {
         return validFrom;
     }
 
-    public void setValidFrom(Instant validFrom) {
-        this.validFrom = validFrom;
+    public void setValidFrom(String validFrom) {
+        this.validFrom = Instant.parse(validFrom + "T00:00:00.000Z");
     }
 
     public Instant getValidTo() {
         return validTo;
     }
 
-    public void setValidTo(Instant validTo) {
-        this.validTo = validTo;
+    public void setValidTo(String validTo) {
+        this.validTo = Instant.parse(validTo + "T23:59:59.999Z");
     }
 }

@@ -84,8 +84,13 @@ public class SpecialtyController {
             @Valid @RequestBody SpecialtyPriceRequest request
     ) {
         log.debug("POST request to createSpecialtyPrice for specialty {}", specialtyId);
-        var specialty = specialtyPriceService.save(specialtyId, request);
-        return ResponseEntity.created(URI.create("/api/v1/specialties/specialty-prices/" + specialtyId)).body(specialty);
+        try {
+            var specialty = specialtyPriceService.save(specialtyId, request);
+            return ResponseEntity.created(URI.create("/api/v1/specialties/specialty-prices/" + specialtyId)).body(specialty);
+        } catch (Exception e) {
+            log.debug(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/specialty-prices/{id}")

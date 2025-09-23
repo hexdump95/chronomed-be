@@ -6,6 +6,7 @@ import ar.sergiovillanueva.chronomed.entity.SpecialtyPrice;
 import ar.sergiovillanueva.chronomed.mapper.SpecialtyPriceMapper;
 import ar.sergiovillanueva.chronomed.repository.SpecialtyPriceRepository;
 import ar.sergiovillanueva.chronomed.repository.SpecialtyRepository;
+import ar.sergiovillanueva.chronomed.specification.SpecialtyPriceSpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,14 @@ public class SpecialtyPriceServiceImpl implements SpecialtyPriceService {
         var specialtyPrice = SpecialtyPriceMapper.specialtyPriceRequestToSpecialtyPrice(request, new SpecialtyPrice());
         var specialty = specialtyRepository.findById(specialtyId)
                 .orElseThrow(() -> new NotFoundServiceException("Specialty not found"));
+
+        var specification = SpecialtyPriceSpecification.byId(specialtyId);
+        specification = specification.and(SpecialtyPriceSpecification.byDateBetween(request.getValidFrom(), request.getValidTo()));
+        var count = specialtyPriceRepository.count(specification);
+        if (count > 0) {
+            throw new RuntimeException("invalid date range");
+        }
+
         specialtyPrice.setSpecialty(specialty);
         specialtyPriceRepository.save(specialtyPrice);
         return SpecialtyPriceMapper.specialtyPriceToSpecialtyPriceResponse(specialtyPrice, new SpecialtyPriceResponse());

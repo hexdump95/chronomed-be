@@ -52,8 +52,13 @@ public class ComorbidityController {
     @PostMapping
     public ResponseEntity<ComorbidityResponse> createComorbidity(@RequestBody ComorbidityRequest request) {
         log.debug("POST request to createComorbidity");
-        var comorbidity = comorbidityService.save(request);
-        return ResponseEntity.created(URI.create("/api/v1/comorbidities/" + comorbidity.getId())).body(comorbidity);
+        try {
+            var comorbidity = comorbidityService.save(request);
+            return ResponseEntity.created(URI.create("/api/v1/comorbidities/" + comorbidity.getId())).body(comorbidity);
+        } catch (Exception e) {
+            log.debug(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PutMapping("/{id}")

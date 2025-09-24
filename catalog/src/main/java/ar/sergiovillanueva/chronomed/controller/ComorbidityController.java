@@ -26,11 +26,11 @@ public class ComorbidityController {
 
     @GetMapping
     public PageResponse<ComorbidityResponse> getComorbidities(
-            @RequestParam(defaultValue = "") String name,
+            @RequestParam(defaultValue = "") String search,
             @RequestParam(defaultValue = "0") int page
     ) {
         log.debug("GET request to getComorbidities");
-        return comorbidityService.findComorbidities(name, page);
+        return comorbidityService.findComorbidities(search, page);
     }
 
     @GetMapping("/all")

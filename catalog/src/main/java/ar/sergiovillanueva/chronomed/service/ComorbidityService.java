@@ -5,7 +5,7 @@ import ar.sergiovillanueva.chronomed.dto.*;
 import java.util.List;
 
 public interface ComorbidityService {
-    PageResponse<ComorbidityResponse> findComorbidities(String name, int page);
+    PageResponse<ComorbidityResponse> findComorbidities(String search, int page);
 
     List<SelectEntityResponse> findAllComorbidities();
 

@@ -2,12 +2,14 @@ package ar.sergiovillanueva.chronomed.service;
 
 import ar.sergiovillanueva.chronomed.dto.*;
 import ar.sergiovillanueva.chronomed.entity.Comorbidity;
+import ar.sergiovillanueva.chronomed.entity.Comorbidity_;
 import ar.sergiovillanueva.chronomed.mapper.ComorbidityMapper;
 import ar.sergiovillanueva.chronomed.repository.ComorbidityRepository;
 import ar.sergiovillanueva.chronomed.specification.ComorbiditySpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,15 +28,16 @@ public class ComorbidityServiceImpl implements ComorbidityService, ComorbidityLo
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<ComorbidityResponse> findComorbidities(String name, int page) {
-        log.debug("Find all comorbidities with name: {} and page: {}", name, page);
+    public PageResponse<ComorbidityResponse> findComorbidities(String search, int page) {
+        log.debug("Find all comorbidities with name: {} and page: {}", search, page);
+        Sort sort = Sort.by(Sort.Direction.ASC, Comorbidity_.name.getName());
         var specification = ComorbiditySpecification.byDeletedAtNull();
-        if (name != null && !name.isBlank()) {
-            specification = specification.and(ComorbiditySpecification.byNameLike(name));
+        if (search != null && !search.isBlank()) {
+            specification = specification.and(ComorbiditySpecification.byNameLike(search));
         }
 
         var pagedComorbidities = comorbidityRepository
-                .findAll(specification, PageRequest.of(page, PAGE_SIZE))
+                .findAll(specification, PageRequest.of(page, PAGE_SIZE, sort))
                 .map(x -> ComorbidityMapper.comorbidityToComorbidityResponse(x, new ComorbidityResponse()));
 
         return new PageResponse.Builder<ComorbidityResponse>()
@@ -49,8 +52,9 @@ public class ComorbidityServiceImpl implements ComorbidityService, ComorbidityLo
     @Transactional(readOnly = true)
     public List<SelectEntityResponse> findAllComorbidities() {
         log.debug("Find all comorbidities");
+        Sort sort = Sort.by(Sort.Direction.ASC, Comorbidity_.name.getName());
         var specification = ComorbiditySpecification.byDeletedAtNull();
-        var comorbidities = comorbidityRepository.findAll(specification);
+        var comorbidities = comorbidityRepository.findAll(specification, sort);
         return comorbidities.stream().map(x -> ComorbidityMapper.comorbidityToSelectEntityResponse(x, new SelectEntityResponse())).toList();
     }
 

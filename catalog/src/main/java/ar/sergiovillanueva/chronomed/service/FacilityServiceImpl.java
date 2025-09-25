@@ -1,6 +1,7 @@
 package ar.sergiovillanueva.chronomed.service;
 
 import ar.sergiovillanueva.chronomed.dto.*;
+import ar.sergiovillanueva.chronomed.entity.Comorbidity_;
 import ar.sergiovillanueva.chronomed.entity.Facility;
 import ar.sergiovillanueva.chronomed.mapper.FacilityMapper;
 import ar.sergiovillanueva.chronomed.repository.FacilityRepository;
@@ -8,6 +9,7 @@ import ar.sergiovillanueva.chronomed.specification.FacilitySpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,23 +20,26 @@ import java.util.List;
 public class FacilityServiceImpl implements FacilityService, FacilityLookupService {
     private final Logger log = LoggerFactory.getLogger(FacilityServiceImpl.class);
     private final FacilityRepository facilityRepository;
+    private final LocalityLookupService localityLookupService;
     private static final Short PAGE_SIZE = 10;
 
-    public FacilityServiceImpl(FacilityRepository facilityRepository) {
+    public FacilityServiceImpl(FacilityRepository facilityRepository, LocalityLookupService localityLookupService) {
         this.facilityRepository = facilityRepository;
+        this.localityLookupService = localityLookupService;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<FacilityResponse> findFacilities(String name, int page) {
-        log.debug("Find all facilities with name: {} and page: {}", name, page);
+    public PageResponse<FacilityResponse> findFacilities(String search, int page) {
+        log.debug("Find all facilities with name: {} and page: {}", search, page);
+        Sort sort = Sort.by(Sort.Direction.ASC, Comorbidity_.name.getName());
         var specification = FacilitySpecification.byDeletedAtNull();
-        if (name != null && !name.isBlank()) {
-            specification = specification.and(FacilitySpecification.byNameLike(name));
+        if (search != null && !search.isBlank()) {
+            specification = specification.and(FacilitySpecification.byNameLike(search));
         }
 
         var pagedFacilities = facilityRepository
-                .findAll(specification, PageRequest.of(page, PAGE_SIZE))
+                .findAll(specification, PageRequest.of(page, PAGE_SIZE, sort))
                 .map(x -> FacilityMapper.facilityToFacilityResponse(x, new FacilityResponse()));
 
         return new PageResponse.Builder<FacilityResponse>()
@@ -49,8 +54,9 @@ public class FacilityServiceImpl implements FacilityService, FacilityLookupServi
     @Transactional(readOnly = true)
     public List<SelectEntityResponse> findAllFacilities() {
         log.debug("Find all facilities");
+        Sort sort = Sort.by(Sort.Direction.ASC, Comorbidity_.name.getName());
         var specification = FacilitySpecification.byDeletedAtNull();
-        var facilities = facilityRepository.findAll(specification);
+        var facilities = facilityRepository.findAll(specification, sort);
         return facilities.stream().map(x -> FacilityMapper.facilityToSelectEntityResponse(x, new SelectEntityResponse())).toList();
     }
 
@@ -68,6 +74,11 @@ public class FacilityServiceImpl implements FacilityService, FacilityLookupServi
     public FacilityResponse save(FacilityRequest request) {
         log.debug("Save facility with facility: {}", request);
         var facility = FacilityMapper.facilityRequestToFacility(request, new Facility());
+        var existingLocalityId = localityLookupService.verifyExistingId(request.getLocalityId());
+        if (!existingLocalityId) {
+            log.debug("(save) locality lookup failed");
+            throw new RuntimeException("error with locality lookup");
+        }
         facilityRepository.save(facility);
         return FacilityMapper.facilityToFacilityResponse(facility, new FacilityResponse());
     }
@@ -80,6 +91,13 @@ public class FacilityServiceImpl implements FacilityService, FacilityLookupServi
                 .orElseThrow(() -> new NotFoundServiceException("Facility with id: " + id + " not found"));
 
         FacilityMapper.facilityRequestToFacility(request, facility);
+
+        var existingLocalityId = localityLookupService.verifyExistingId(request.getLocalityId());
+        if (!existingLocalityId) {
+            log.debug("(update) locality lookup failed");
+            throw new RuntimeException("error with locality lookup");
+        }
+
         facilityRepository.save(facility);
         return FacilityMapper.facilityToFacilityResponse(facility, new FacilityResponse());
     }

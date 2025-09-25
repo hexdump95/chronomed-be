@@ -26,11 +26,11 @@ public class FacilityController {
 
     @GetMapping
     public PageResponse<FacilityResponse> getFacilities(
-            @RequestParam(defaultValue = "") String name,
+            @RequestParam(defaultValue = "") String search,
             @RequestParam(defaultValue = "0") int page
     ) {
         log.debug("GET request to getFacilities");
-        return facilityService.findFacilities(name, page);
+        return facilityService.findFacilities(search, page);
     }
 
     @GetMapping("/all")
@@ -52,8 +52,13 @@ public class FacilityController {
     @PostMapping
     public ResponseEntity<FacilityResponse> createFacility(@RequestBody FacilityRequest request) {
         log.debug("POST request to createFacility");
-        var facility = facilityService.save(request);
-        return ResponseEntity.created(URI.create("/api/v1/facilities/" + facility.getId())).body(facility);
+        try {
+            var facility = facilityService.save(request);
+            return ResponseEntity.created(URI.create("/api/v1/facilities/" + facility.getId())).body(facility);
+        } catch (Exception e) {
+            log.debug(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PutMapping("/{id}")
@@ -62,6 +67,7 @@ public class FacilityController {
         try {
             return ResponseEntity.ok(facilityService.update(id, request));
         } catch (Exception e) {
+            log.debug(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }

@@ -13,7 +13,8 @@ public class FacilityMapper {
         response.setDescription(entity.getDescription());
         response.setTaxIdentificationNumber(entity.getTaxIdentificationNumber());
         response.setEmail(entity.getEmail());
-        response.setPhone(entity.getPhone());
+        response.setPhoneNumber(entity.getPhoneNumber());
+        response.setLocalityId(entity.getLocalityId());
         return response;
     }
 
@@ -28,10 +29,13 @@ public class FacilityMapper {
         entity.setDescription(request.getDescription());
         entity.setTaxIdentificationNumber(request.getTaxIdentificationNumber());
         entity.setEmail(request.getEmail());
-        entity.setPhone(request.getPhone());
-        GeometryFactory gf = new GeometryFactory();
-        Point point = gf.createPoint(new Coordinate(request.getCoordinates().getX(), request.getCoordinates().getY()));
-        entity.setCoordinates(point);
+        entity.setPhoneNumber(request.getPhoneNumber());
+        if (request.getCoordinates() != null) {
+            GeometryFactory gf = new GeometryFactory();
+            Point point = gf.createPoint(new Coordinate(request.getCoordinates().getX(), request.getCoordinates().getY()));
+            entity.setCoordinates(point);
+        }
+        entity.setLocalityId(request.getLocalityId());
         return entity;
     }
 
@@ -41,8 +45,11 @@ public class FacilityMapper {
         response.setDescription(entity.getDescription());
         response.setTaxIdentificationNumber(entity.getTaxIdentificationNumber());
         response.setEmail(entity.getEmail());
-        response.setPhone(entity.getPhone());
-        response.setCoordinates(new org.springframework.data.geo.Point(entity.getCoordinates().getX(), entity.getCoordinates().getY()));
+        response.setPhoneNumber(entity.getPhoneNumber());
+        if (entity.getCoordinates() != null) {
+            response.setCoordinates(new org.springframework.data.geo.Point(entity.getCoordinates().getX(), entity.getCoordinates().getY()));
+        }
+        response.setLocalityId(entity.getLocalityId());
         return response;
     }
 }

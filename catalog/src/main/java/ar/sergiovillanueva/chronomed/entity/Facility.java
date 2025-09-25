@@ -21,13 +21,13 @@ public class Facility extends BaseEntity {
     private String description;
 
     @Column(name = "tax_identification_number")
-    private long taxIdentificationNumber;
+    private String taxIdentificationNumber;
 
     @Column(name = "email")
     private String email;
 
-    @Column(name = "phone")
-    private String phone;
+    @Column(name = "phone_number")
+    private String phoneNumber;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY, mappedBy = "facility")
     private List<Room> rooms = new ArrayList<>();
@@ -82,11 +82,11 @@ public class Facility extends BaseEntity {
         this.description = description;
     }
 
-    public long getTaxIdentificationNumber() {
+    public String getTaxIdentificationNumber() {
         return taxIdentificationNumber;
     }
 
-    public void setTaxIdentificationNumber(long taxIdentificationNumber) {
+    public void setTaxIdentificationNumber(String taxIdentificationNumber) {
         this.taxIdentificationNumber = taxIdentificationNumber;
     }
 
@@ -98,12 +98,12 @@ public class Facility extends BaseEntity {
         this.email = email;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public List<Room> getRooms() {

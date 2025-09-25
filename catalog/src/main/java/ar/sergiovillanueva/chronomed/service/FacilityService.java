@@ -5,7 +5,7 @@ import ar.sergiovillanueva.chronomed.dto.*;
 import java.util.List;
 
 public interface FacilityService {
-    PageResponse<FacilityResponse> findFacilities(String name, int page);
+    PageResponse<FacilityResponse> findFacilities(String search, int page);
 
     List<SelectEntityResponse> findAllFacilities();
 

@@ -4,9 +4,10 @@ public class FacilityResponse {
     private Long id;
     private String name;
     private String description;
-    private long taxIdentificationNumber;
+    private String taxIdentificationNumber;
     private String email;
-    private String phone;
+    private String phoneNumber;
+    private Long localityId;
 
     public Long getId() {
         return id;
@@ -32,11 +33,11 @@ public class FacilityResponse {
         this.description = description;
     }
 
-    public long getTaxIdentificationNumber() {
+    public String getTaxIdentificationNumber() {
         return taxIdentificationNumber;
     }
 
-    public void setTaxIdentificationNumber(long taxIdentificationNumber) {
+    public void setTaxIdentificationNumber(String taxIdentificationNumber) {
         this.taxIdentificationNumber = taxIdentificationNumber;
     }
 
@@ -48,11 +49,19 @@ public class FacilityResponse {
         this.email = email;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public Long getLocalityId() {
+        return localityId;
+    }
+
+    public void setLocalityId(Long localityId) {
+        this.localityId = localityId;
     }
 }

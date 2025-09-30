@@ -24,4 +24,12 @@ public class PaymentTypeServiceImpl implements PaymentTypeService {
             return response;
         }).toList();
     }
+
+    @Override
+    public void patchPaymentTypeActive(Long id) {
+        var paymentType = paymentTypeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Payment type not found"));
+        paymentType.setActive(!paymentType.isActive());
+        paymentTypeRepository.save(paymentType);
+    }
 }

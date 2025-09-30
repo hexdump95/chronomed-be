@@ -4,9 +4,8 @@ import ar.sergiovillanueva.chronomed.dto.PaymentTypeResponse;
 import ar.sergiovillanueva.chronomed.service.PaymentTypeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,5 +23,17 @@ public class PaymentController {
     public List<PaymentTypeResponse> getPaymentTypes() {
         log.debug("GET request to getPaymentTypes");
         return paymentTypeService.getPaymentTypes();
+    }
+
+    @PatchMapping("/types/{typeId}")
+    public ResponseEntity<Void> patchPaymentTypeActive(@PathVariable Long typeId) {
+        log.debug("PATCH request to patchPaymentTypeActive");
+        try {
+            paymentTypeService.patchPaymentTypeActive(typeId);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            log.debug(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

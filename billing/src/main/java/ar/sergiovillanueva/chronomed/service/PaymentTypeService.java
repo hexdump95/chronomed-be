@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface PaymentTypeService {
     List<PaymentTypeResponse> getPaymentTypes();
+    void patchPaymentTypeActive(Long id);
 }

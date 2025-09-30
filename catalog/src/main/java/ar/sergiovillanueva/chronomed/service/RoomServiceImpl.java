@@ -5,6 +5,7 @@ import ar.sergiovillanueva.chronomed.dto.RoomDetailResponse;
 import ar.sergiovillanueva.chronomed.dto.RoomRequest;
 import ar.sergiovillanueva.chronomed.dto.RoomResponse;
 import ar.sergiovillanueva.chronomed.entity.Room;
+import ar.sergiovillanueva.chronomed.entity.Room_;
 import ar.sergiovillanueva.chronomed.mapper.RoomMapper;
 import ar.sergiovillanueva.chronomed.repository.FacilityRepository;
 import ar.sergiovillanueva.chronomed.repository.RoomRepository;
@@ -12,6 +13,7 @@ import ar.sergiovillanueva.chronomed.specification.RoomSpecification;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,10 +35,11 @@ public class RoomServiceImpl implements RoomService {
     @Transactional(readOnly = true)
     public PageResponse<RoomResponse> getRoomsByFacilityId(Long facilityId, int page) {
         log.debug("Find all rooms by facilityId: {} with page: {}", facilityId, page);
+        var sort = Sort.by(Sort.Direction.ASC, Room_.name.getName());
         var specification = RoomSpecification.byDeletedAtNull();
 
         var pagedRooms = roomRepository
-                .findAll(specification, PageRequest.of(page, PAGE_SIZE))
+                .findAll(specification, PageRequest.of(page, PAGE_SIZE, sort))
                 .map(x -> RoomMapper.roomToRoomResponse(x, new RoomResponse()));
 
         return new PageResponse.Builder<RoomResponse>()

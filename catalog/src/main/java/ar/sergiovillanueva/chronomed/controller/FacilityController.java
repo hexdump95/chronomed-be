@@ -88,43 +88,52 @@ public class FacilityController {
             @PathVariable Long facilityId,
             @RequestParam(defaultValue = "0") int page
     ) {
+        log.debug("GET request to getRoomsByFacilityId");
         return ResponseEntity.ok(roomService.getRoomsByFacilityId(facilityId, page));
     }
 
     @PostMapping("/{facilityId}/rooms")
     public ResponseEntity<RoomResponse> createRoomByFacilityId(@PathVariable Long facilityId, @RequestBody RoomRequest request) {
+        log.debug("POST request to createRoomByFacilityId");
         try {
             var room = roomService.createRoomByFacilityId(facilityId, request);
             return ResponseEntity.created(URI.create("/api/v1/facilities/rooms/" + room.getId())).body(room);
         } catch (Exception e) {
+            log.debug(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }
 
     @GetMapping("/rooms/{roomId}")
     public ResponseEntity<RoomDetailResponse> getRoom(@PathVariable Long roomId) {
+        log.debug("GET request to getRoom with id {}", roomId);
         try {
             return ResponseEntity.ok(roomService.getRoom(roomId));
         } catch (Exception e) {
+            log.debug(e.getMessage());
             return ResponseEntity.notFound().build();
         }
     }
 
     @PutMapping("/rooms/{roomId}")
     public ResponseEntity<RoomResponse> updateRoom(@PathVariable Long roomId, @RequestBody RoomRequest request) {
+        log.debug("PUT request to updateRoom with id {}", roomId);
         try {
             return ResponseEntity.ok(roomService.updateRoom(roomId, request));
         } catch (Exception e) {
+            log.debug(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }
 
     @DeleteMapping("/rooms/{roomId}")
     public ResponseEntity<Void> deleteRoom(@PathVariable Long roomId) {
+        log.debug("DELETE request to deleteRoom with id {}", roomId);
         try {
             roomService.deleteRoom(roomId);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
+            log.debug(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }

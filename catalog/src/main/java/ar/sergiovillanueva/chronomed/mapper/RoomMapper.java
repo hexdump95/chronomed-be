@@ -31,7 +31,8 @@ public class RoomMapper {
             specialty.setId(specialtyId);
             return specialty;
         }).toList();
-        entity.setSpecialties(specialties);
+        entity.getSpecialties().clear();
+        entity.getSpecialties().addAll(specialties);
         return entity;
     }
 

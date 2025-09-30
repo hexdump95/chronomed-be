@@ -5,7 +5,10 @@ import ar.sergiovillanueva.chronomed.dto.InsuranceDetailResponse;
 import ar.sergiovillanueva.chronomed.dto.InsuranceRequest;
 import ar.sergiovillanueva.chronomed.dto.InsuranceResponse;
 import ar.sergiovillanueva.chronomed.entity.Insurance;
+import ar.sergiovillanueva.chronomed.entity.InsuranceCoverage;
 import ar.sergiovillanueva.chronomed.entity.InsuranceType;
+
+import java.util.Comparator;
 
 public class InsuranceMapper {
     public static InsuranceResponse insuranceToInsuranceResponse(Insurance entity, InsuranceResponse response) {
@@ -21,14 +24,12 @@ public class InsuranceMapper {
         response.setName(entity.getName());
         response.setDescription(entity.getDescription());
         response.setInsuranceTypeName(entity.getInsuranceType().getName());
-        var coverages = entity.getCoverages().stream().map(c -> {
-            var res = new InsuranceCoverageResponse();
-            res.setId(c.getId());
-            res.setAmount(c.getAmount());
-            res.setValidFrom(c.getValidFrom());
-            res.setValidTo(c.getValidTo());
-            return res;
-        }).toList();
+        var coverages = entity.getCoverages().stream()
+                .sorted(Comparator.comparing(InsuranceCoverage::getValidFrom).reversed())
+                .map(c -> {
+                    var res = new InsuranceCoverageResponse();
+                    return InsuranceCoverageMapper.insuranceCoverageToInsuranceCoverageResponse(c, res);
+                }).toList();
         response.setCoverages(coverages);
         return response;
     }

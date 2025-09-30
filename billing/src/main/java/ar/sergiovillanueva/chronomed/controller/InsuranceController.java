@@ -29,11 +29,11 @@ public class InsuranceController {
 
     @GetMapping
     public PageResponse<InsuranceResponse> getInsurances(
-            @RequestParam(defaultValue = "") String name,
+            @RequestParam(defaultValue = "") String search,
             @RequestParam(defaultValue = "0") int page
     ) {
         log.debug("GET request to getInsurances");
-        return insuranceService.findInsurances(name, page);
+        return insuranceService.findInsurances(search, page);
     }
 
     @GetMapping("/all")

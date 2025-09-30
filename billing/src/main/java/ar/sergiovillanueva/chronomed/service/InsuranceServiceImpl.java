@@ -28,15 +28,16 @@ public class InsuranceServiceImpl implements InsuranceService, InsuranceLookupSe
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<InsuranceResponse> findInsurances(String name, int page) {
-        log.debug("Find all insurances with name: {} and page: {}", name, page);
+    public PageResponse<InsuranceResponse> findInsurances(String search, int page) {
+        log.debug("Find all insurances with name: {} and page: {}", search, page);
+        var sort = Sort.by(Sort.Direction.ASC, Insurance_.name.getName());
         var specification = InsuranceSpecification.byDeletedAtNull();
-        if (name != null && !name.isBlank()) {
-            specification = specification.and(InsuranceSpecification.byNameLike(name));
+        if (search != null && !search.isBlank()) {
+            specification = specification.and(InsuranceSpecification.byNameLike(search));
         }
 
         var pagedComorbidities = insuranceRepository
-                .findAll(specification, PageRequest.of(page, PAGE_SIZE))
+                .findAll(specification, PageRequest.of(page, PAGE_SIZE, sort))
                 .map(x -> InsuranceMapper.insuranceToInsuranceResponse(x, new InsuranceResponse()));
 
         return new PageResponse.Builder<InsuranceResponse>()

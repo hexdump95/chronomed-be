@@ -5,7 +5,7 @@ import ar.sergiovillanueva.chronomed.dto.*;
 import java.util.List;
 
 public interface InsuranceService {
-    PageResponse<InsuranceResponse> findInsurances(String name, int page);
+    PageResponse<InsuranceResponse> findInsurances(String search, int page);
 
     List<SelectEntityResponse> findAllByInsuranceTypeId(Long insuranceTypeId);
 

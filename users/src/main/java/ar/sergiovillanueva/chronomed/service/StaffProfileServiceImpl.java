@@ -57,7 +57,7 @@ public class StaffProfileServiceImpl implements StaffProfileService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<Long> getInsuranceIds(String userId) {
         log.debug("Get insurance ids for user {}", userId);
         var account = accountRepository.findById(UUID.fromString(userId))

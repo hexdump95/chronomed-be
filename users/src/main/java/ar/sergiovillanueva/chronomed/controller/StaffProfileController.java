@@ -61,6 +61,7 @@ public class StaffProfileController {
             profileService.updateInsurances(JwtUtils.extractUserId(), insuranceIds);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
+            log.debug(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }

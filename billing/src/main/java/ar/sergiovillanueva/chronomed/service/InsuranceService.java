@@ -9,6 +9,8 @@ public interface InsuranceService {
 
     List<SelectEntityResponse> findAllByInsuranceTypeId(Long insuranceTypeId);
 
+    List<SelectEntityResponse> findInsurancesByIds(List<Long> insuranceIds);
+
     InsuranceDetailResponse getOne(Long id);
 
     InsuranceResponse save(InsuranceRequest request);

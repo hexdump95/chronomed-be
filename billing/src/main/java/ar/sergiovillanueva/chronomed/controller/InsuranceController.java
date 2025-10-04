@@ -42,6 +42,17 @@ public class InsuranceController {
         return insuranceService.findAllByInsuranceTypeId(insuranceTypeId);
     }
 
+    @GetMapping("/byIds")
+    public ResponseEntity<List<SelectEntityResponse>> getInsurancesByIds(@RequestParam List<Long> insuranceIds) {
+        log.debug("GET request to getInsurancesByIds");
+        try {
+            return ResponseEntity.ok(insuranceService.findInsurancesByIds(insuranceIds));
+        } catch (Exception e) {
+            log.debug(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<InsuranceDetailResponse> getOne(@PathVariable Long id) {
         log.debug("GET request to getInsurance by id");

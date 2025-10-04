@@ -67,6 +67,20 @@ public class InsuranceServiceImpl implements InsuranceService, InsuranceLookupSe
 
     @Override
     @Transactional(readOnly = true)
+    public List<SelectEntityResponse> findInsurancesByIds(List<Long> insuranceIds) {
+        log.debug("Find all insurances by ids {}", insuranceIds);
+        var specification = InsuranceSpecification.byIds(insuranceIds);
+        var insurances = insuranceRepository.findAll(specification);
+        return insurances.stream().map(x -> {
+            var response = new SelectEntityResponse();
+            response.setId(x.getId());
+            response.setName(x.getName());
+            return response;
+        }).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public InsuranceDetailResponse getOne(Long id) {
         log.debug("GET request to get insurance by id {}", id);
         Insurance insurance = insuranceRepository.findById(id)

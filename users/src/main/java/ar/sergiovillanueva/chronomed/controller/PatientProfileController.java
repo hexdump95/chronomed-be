@@ -115,4 +115,19 @@ public class PatientProfileController {
         }
     }
 
+    @GetMapping("/sex")
+    public List<SelectEntityResponse> getSex() {
+        return patientProfileService.getSex();
+    }
+
+    @GetMapping("/self-perceived-identities")
+    public List<SelectEntityResponse> getSelfPerceivedIdentities() {
+        return patientProfileService.getSelfPerceivedIdentities();
+    }
+
+    @GetMapping("/document-types")
+    public List<SelectEntityResponse> getDocumentTypes() {
+        return patientProfileService.getDocumentTypes();
+    }
+
 }

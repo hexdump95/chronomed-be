@@ -1,11 +1,11 @@
 package ar.sergiovillanueva.chronomed.service;
 
-import ar.sergiovillanueva.chronomed.dto.PatientDetailResponse;
-import ar.sergiovillanueva.chronomed.dto.PatientInsuranceRequest;
-import ar.sergiovillanueva.chronomed.dto.PatientInsuranceResponse;
-import ar.sergiovillanueva.chronomed.dto.PatientRequest;
+import ar.sergiovillanueva.chronomed.dto.*;
 import ar.sergiovillanueva.chronomed.entity.*;
+import ar.sergiovillanueva.chronomed.repository.DocumentTypeRepository;
 import ar.sergiovillanueva.chronomed.repository.PatientRepository;
+import ar.sergiovillanueva.chronomed.repository.SelfPerceivedIdentityRepository;
+import ar.sergiovillanueva.chronomed.repository.SexRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -22,13 +22,23 @@ public class PatientProfileServiceImpl implements PatientProfileService {
     private final PatientSyncService patientSyncService;
     private final ComorbidityLookupService comorbidityLookupService;
     private final InsuranceLookupService insuranceLookupService;
+    private final SexRepository sexRepository;
+    private final SelfPerceivedIdentityRepository selfPerceivedIdentityRepository;
+    private final DocumentTypeRepository documentTypeRepository;
 
-    public PatientProfileServiceImpl(PatientRepository patientRepository, PatientAuthService patientAuthService, PatientSyncService patientSyncService, ComorbidityLookupService comorbidityLookupService, InsuranceLookupService insuranceLookupService) {
+    public PatientProfileServiceImpl(PatientRepository patientRepository, PatientAuthService patientAuthService,
+                                     PatientSyncService patientSyncService, ComorbidityLookupService comorbidityLookupService,
+                                     InsuranceLookupService insuranceLookupService, SexRepository sexRepository,
+                                     SelfPerceivedIdentityRepository selfPerceivedIdentityRepository,
+                                     DocumentTypeRepository documentTypeRepository) {
         this.patientRepository = patientRepository;
         this.patientAuthService = patientAuthService;
         this.patientSyncService = patientSyncService;
         this.comorbidityLookupService = comorbidityLookupService;
         this.insuranceLookupService = insuranceLookupService;
+        this.sexRepository = sexRepository;
+        this.selfPerceivedIdentityRepository = selfPerceivedIdentityRepository;
+        this.documentTypeRepository = documentTypeRepository;
     }
 
     @Override
@@ -50,6 +60,9 @@ public class PatientProfileServiceImpl implements PatientProfileService {
         if (patient.getSelfPerceivedIdentity() != null) {
             response.setSelfPerceivedIdentityId(patient.getSelfPerceivedIdentity().getId());
         }
+        if (patient.getSex() != null) {
+            response.setSexId(patient.getSex().getId());
+        }
         return response;
     }
 
@@ -69,7 +82,9 @@ public class PatientProfileServiceImpl implements PatientProfileService {
         patient.setIdentityDocument(request.getIdentityDocument());
         patient.setDocumentType(documentType);
         patient.setSelfPerceivedIdentity(selfPerceivedIdentity);
+        patient.setDateOfBirth(request.getDateOfBirth());
         patient.setSex(sex);
+        patientRepository.save(patient);
     }
 
     @Override
@@ -104,6 +119,7 @@ public class PatientProfileServiceImpl implements PatientProfileService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<PatientInsuranceResponse> getInsurances(String patientId) {
         log.debug("get insurances for patient {}", patientId);
         var patient = patientRepository.findById(UUID.fromString(patientId))
@@ -117,6 +133,7 @@ public class PatientProfileServiceImpl implements PatientProfileService {
     }
 
     @Override
+    @Transactional
     public void updateInsurances(String patientId, List<PatientInsuranceRequest> requestList) {
         log.debug("update insurances for patient {}", patientId);
         var patient = patientRepository.findById(UUID.fromString(patientId))
@@ -135,5 +152,38 @@ public class PatientProfileServiceImpl implements PatientProfileService {
         patient.getPatientInsurances().clear();
         patient.getPatientInsurances().addAll(insurances);
         patientRepository.save(patient);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<SelectEntityResponse> getSex() {
+        return sexRepository.findAll().stream().map(x -> {
+            var response = new SelectEntityResponse();
+            response.setId(x.getId());
+            response.setName(x.getName());
+            return response;
+        }).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<SelectEntityResponse> getSelfPerceivedIdentities() {
+        return selfPerceivedIdentityRepository.findAll().stream().map(x -> {
+            var response = new SelectEntityResponse();
+            response.setId(x.getId());
+            response.setName(x.getName());
+            return response;
+        }).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<SelectEntityResponse> getDocumentTypes() {
+        return documentTypeRepository.findAll().stream().map(x -> {
+            var response = new SelectEntityResponse();
+            response.setId(x.getId());
+            response.setName(x.getName());
+            return response;
+        }).toList();
     }
 }

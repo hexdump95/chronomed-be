@@ -1,11 +1,11 @@
 package ar.sergiovillanueva.chronomed.dto;
 
-import java.time.Instant;
+import java.time.LocalDate;
 
 public class PatientRequest {
     private String identityDocument;
     private Long documentTypeId;
-    private Instant dateOfBirth;
+    private LocalDate dateOfBirth;
     private Long sexId;
     private Long selfPerceivedIdentityId;
 
@@ -25,11 +25,11 @@ public class PatientRequest {
         this.documentTypeId = documentTypeId;
     }
 
-    public Instant getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Instant dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

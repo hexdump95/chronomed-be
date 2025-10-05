@@ -3,6 +3,7 @@ package ar.sergiovillanueva.chronomed.entity;
 import jakarta.persistence.*;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -15,7 +16,7 @@ public class Patient extends BaseEntity {
     private UUID id;
 
     @Column(name = "date_of_birth")
-    private Instant dateOfBirth;
+    private LocalDate dateOfBirth;
 
     @Column(name = "identity_document")
     private String identityDocument;
@@ -67,11 +68,11 @@ public class Patient extends BaseEntity {
         this.id = id;
     }
 
-    public Instant getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Instant dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

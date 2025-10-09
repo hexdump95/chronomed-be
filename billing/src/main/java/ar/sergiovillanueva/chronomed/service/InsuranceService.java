@@ -9,7 +9,7 @@ public interface InsuranceService {
 
     List<SelectEntityResponse> findAllByInsuranceTypeId(Long insuranceTypeId);
 
-    List<SelectEntityResponse> findInsurancesByIds(List<Long> insuranceIds);
+    List<InsuranceResponse> findInsurancesByIds(List<Long> insuranceIds);
 
     InsuranceDetailResponse getOne(Long id);
 

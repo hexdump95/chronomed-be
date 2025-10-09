@@ -43,7 +43,7 @@ public class InsuranceController {
     }
 
     @GetMapping("/byIds")
-    public ResponseEntity<List<SelectEntityResponse>> getInsurancesByIds(@RequestParam List<Long> insuranceIds) {
+    public ResponseEntity<List<InsuranceResponse>> getInsurancesByIds(@RequestParam List<Long> insuranceIds) {
         log.debug("GET request to getInsurancesByIds");
         try {
             return ResponseEntity.ok(insuranceService.findInsurancesByIds(insuranceIds));

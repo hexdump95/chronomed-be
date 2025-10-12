@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -103,11 +104,23 @@ public class PatientProfileController {
         }
     }
 
-    @PutMapping("/insurances")
-    public ResponseEntity<Void> updateInsurances(@RequestBody List<PatientInsuranceRequest> request) {
-        log.debug("PUT request to updateInsurances");
+    @PostMapping("/insurances")
+    public ResponseEntity<Void> createInsurance(@RequestBody PatientInsuranceRequest request) {
+        log.debug("POST request to createInsurance");
         try {
-            patientProfileService.updateInsurances(JwtUtils.extractUserId(), request);
+            var id = patientProfileService.createInsurance(JwtUtils.extractUserId(), request);
+            return ResponseEntity.created(new URI("/api/v1/patient/insurances/" + id)).build();
+        } catch (Exception e) {
+            log.debug(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PutMapping("/insurances/{id}")
+    public ResponseEntity<Void> updateInsurance(@PathVariable Long id, @RequestBody PatientInsuranceRequest request) {
+        log.debug("PUT request to updateInsurance");
+        try {
+            patientProfileService.updateInsurance(id, JwtUtils.extractUserId(), request);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             log.debug(e.getMessage());

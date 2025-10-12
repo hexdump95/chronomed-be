@@ -7,6 +7,7 @@ public class InsuranceDetailResponse {
     private Long id;
     private String name;
     private String description;
+    private Long insuranceTypeId;
     private String insuranceTypeName;
     private List<InsuranceCoverageResponse> coverages = new ArrayList<>();
 
@@ -32,6 +33,14 @@ public class InsuranceDetailResponse {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Long getInsuranceTypeId() {
+        return insuranceTypeId;
+    }
+
+    public void setInsuranceTypeId(Long insuranceTypeId) {
+        this.insuranceTypeId = insuranceTypeId;
     }
 
     public String getInsuranceTypeName() {

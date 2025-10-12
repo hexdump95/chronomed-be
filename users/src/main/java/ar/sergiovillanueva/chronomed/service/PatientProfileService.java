@@ -15,7 +15,9 @@ public interface PatientProfileService {
 
     List<PatientInsuranceResponse> getInsurances(String patientId);
 
-    void updateInsurances(String patientId, List<PatientInsuranceRequest> comorbidityIds);
+    Long createInsurance(String patientId, PatientInsuranceRequest request);
+
+    void updateInsurance(Long id, String patientId, PatientInsuranceRequest request);
 
     List<SelectEntityResponse> getSex();
 

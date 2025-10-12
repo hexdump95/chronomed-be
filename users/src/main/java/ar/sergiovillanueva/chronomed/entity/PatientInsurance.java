@@ -15,6 +15,10 @@ public class PatientInsurance extends BaseEntity {
     @Column(name = "insurance_id")
     private Long insuranceId;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "patient_id")
+    private Patient patient;
+
     public Long getId() {
         return id;
     }
@@ -37,5 +41,13 @@ public class PatientInsurance extends BaseEntity {
 
     public void setInsuranceId(Long insuranceId) {
         this.insuranceId = insuranceId;
+    }
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
     }
 }

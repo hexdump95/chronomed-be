@@ -1,8 +1,17 @@
 package ar.sergiovillanueva.chronomed.dto;
 
 public class PatientInsuranceRequest {
+    private Long id;
     private int affiliateNumber;
     private Long insuranceId;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public int getAffiliateNumber() {
         return affiliateNumber;

@@ -47,12 +47,7 @@ public class Patient extends BaseEntity {
     )
     private List<PatientComorbidity> patientComorbidities = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinTable(
-            name = "patient_patient_insurance",
-            joinColumns = @JoinColumn(name = "patient_id"),
-            inverseJoinColumns = @JoinColumn(name = "patient_insurance_id")
-    )
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "patient")
     private List<PatientInsurance> patientInsurances = new ArrayList<>();
 
     @PrePersist

@@ -2,10 +2,7 @@ package ar.sergiovillanueva.chronomed.service;
 
 import ar.sergiovillanueva.chronomed.dto.*;
 import ar.sergiovillanueva.chronomed.entity.*;
-import ar.sergiovillanueva.chronomed.repository.DocumentTypeRepository;
-import ar.sergiovillanueva.chronomed.repository.PatientRepository;
-import ar.sergiovillanueva.chronomed.repository.SelfPerceivedIdentityRepository;
-import ar.sergiovillanueva.chronomed.repository.SexRepository;
+import ar.sergiovillanueva.chronomed.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -25,12 +22,13 @@ public class PatientProfileServiceImpl implements PatientProfileService {
     private final SexRepository sexRepository;
     private final SelfPerceivedIdentityRepository selfPerceivedIdentityRepository;
     private final DocumentTypeRepository documentTypeRepository;
+    private final PatientInsuranceRepository patientInsuranceRepository;
 
     public PatientProfileServiceImpl(PatientRepository patientRepository, PatientAuthService patientAuthService,
                                      PatientSyncService patientSyncService, ComorbidityLookupService comorbidityLookupService,
                                      InsuranceLookupService insuranceLookupService, SexRepository sexRepository,
                                      SelfPerceivedIdentityRepository selfPerceivedIdentityRepository,
-                                     DocumentTypeRepository documentTypeRepository) {
+                                     DocumentTypeRepository documentTypeRepository, PatientInsuranceRepository patientInsuranceRepository) {
         this.patientRepository = patientRepository;
         this.patientAuthService = patientAuthService;
         this.patientSyncService = patientSyncService;
@@ -39,6 +37,7 @@ public class PatientProfileServiceImpl implements PatientProfileService {
         this.sexRepository = sexRepository;
         this.selfPerceivedIdentityRepository = selfPerceivedIdentityRepository;
         this.documentTypeRepository = documentTypeRepository;
+        this.patientInsuranceRepository = patientInsuranceRepository;
     }
 
     @Override
@@ -126,6 +125,7 @@ public class PatientProfileServiceImpl implements PatientProfileService {
                 .orElseThrow(() -> new NotFoundServiceException("patient not found"));
         return patient.getPatientInsurances().stream().map(i -> {
             var response = new PatientInsuranceResponse();
+            response.setId(i.getId());
             response.setAffiliateNumber(i.getAffiliateNumber());
             response.setInsuranceId(i.getInsuranceId());
             return response;
@@ -134,24 +134,46 @@ public class PatientProfileServiceImpl implements PatientProfileService {
 
     @Override
     @Transactional
-    public void updateInsurances(String patientId, List<PatientInsuranceRequest> requestList) {
-        log.debug("update insurances for patient {}", patientId);
+    public Long createInsurance(String patientId, PatientInsuranceRequest request) {
+        log.debug("create insurance for patient {}", patientId);
+
         var patient = patientRepository.findById(UUID.fromString(patientId))
-                .orElseThrow(() -> new NotFoundServiceException("patient not found"));
-        var existingInsurances = insuranceLookupService.verifyExistingIds(requestList.stream().map(PatientInsuranceRequest::getInsuranceId).toList());
+                .orElseThrow(() -> new RuntimeException("patient not found"));
+
+        var patientInsurance = new PatientInsurance();
+        patientInsurance.setInsuranceId(request.getInsuranceId());
+        patientInsurance.setAffiliateNumber(request.getAffiliateNumber());
+        patientInsurance.setPatient(patient);
+
+        var existingInsurances = insuranceLookupService.verifyExistingIds(List.of(request.getInsuranceId()));
         if (!existingInsurances) {
             log.debug("insurance lookup failed");
             throw new RuntimeException("error with insurance lookup");
         }
-        var insurances = requestList.stream().map(i -> {
-            var insurance = new PatientInsurance();
-            insurance.setAffiliateNumber(i.getAffiliateNumber());
-            insurance.setInsuranceId(i.getInsuranceId());
-            return insurance;
-        }).toList();
-        patient.getPatientInsurances().clear();
-        patient.getPatientInsurances().addAll(insurances);
-        patientRepository.save(patient);
+        patientInsuranceRepository.save(patientInsurance);
+        return patientInsurance.getId();
+    }
+
+    @Override
+    @Transactional
+    public void updateInsurance(Long id, String patientId, PatientInsuranceRequest request) {
+        log.debug("update insurance for patient {}", patientId);
+        var patientInsurance = patientInsuranceRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("patient not found"));
+
+        if (!patientInsurance.getPatient().getId().equals(UUID.fromString(patientId))) {
+            throw new RuntimeException("insurance isn't from this user");
+        }
+
+        patientInsurance.setInsuranceId(request.getInsuranceId());
+        patientInsurance.setAffiliateNumber(request.getAffiliateNumber());
+
+        var existingInsurances = insuranceLookupService.verifyExistingIds(List.of(request.getInsuranceId()));
+        if (!existingInsurances) {
+            log.debug("insurance lookup failed");
+            throw new RuntimeException("error with insurance lookup");
+        }
+        patientInsuranceRepository.save(patientInsurance);
     }
 
     @Override

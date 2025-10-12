@@ -23,6 +23,7 @@ public class InsuranceMapper {
         response.setId(entity.getId());
         response.setName(entity.getName());
         response.setDescription(entity.getDescription());
+        response.setInsuranceTypeId(entity.getInsuranceType().getId());
         response.setInsuranceTypeName(entity.getInsuranceType().getName());
         var coverages = entity.getCoverages().stream()
                 .sorted(Comparator.comparing(InsuranceCoverage::getValidFrom).reversed())

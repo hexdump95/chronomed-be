@@ -177,6 +177,20 @@ public class PatientProfileServiceImpl implements PatientProfileService {
     }
 
     @Override
+    @Transactional
+    public void deleteInsurance(Long id, String patientId) {
+        log.debug("delete insurance {} for patient {}", id, patientId);
+        var patientInsurance = patientInsuranceRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("patient not found"));
+
+        if (!patientInsurance.getPatient().getId().equals(UUID.fromString(patientId))) {
+            throw new RuntimeException("insurance isn't from this user");
+        }
+
+        patientInsuranceRepository.delete(patientInsurance);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<SelectEntityResponse> getSex() {
         return sexRepository.findAll().stream().map(x -> {

@@ -105,8 +105,8 @@ public class PatientProfileController {
     }
 
     @PostMapping("/insurances")
-    public ResponseEntity<Void> createInsurance(@RequestBody PatientInsuranceRequest request) {
-        log.debug("POST request to createInsurance");
+    public ResponseEntity<Void> createPatientInsurance(@RequestBody PatientInsuranceRequest request) {
+        log.debug("POST request to createPatientInsurance");
         try {
             var id = patientProfileService.createInsurance(JwtUtils.extractUserId(), request);
             return ResponseEntity.created(new URI("/api/v1/patient/insurances/" + id)).build();
@@ -117,10 +117,22 @@ public class PatientProfileController {
     }
 
     @PutMapping("/insurances/{id}")
-    public ResponseEntity<Void> updateInsurance(@PathVariable Long id, @RequestBody PatientInsuranceRequest request) {
-        log.debug("PUT request to updateInsurance");
+    public ResponseEntity<Void> updatePatientInsurance(@PathVariable Long id, @RequestBody PatientInsuranceRequest request) {
+        log.debug("PUT request to updatePatientInsurance");
         try {
             patientProfileService.updateInsurance(id, JwtUtils.extractUserId(), request);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            log.debug(e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @DeleteMapping("/insurances/{id}")
+    public ResponseEntity<Void> deletePatientInsurance(@PathVariable Long id) {
+        log.debug("DELETE request to deletePatientInsurance");
+        try {
+            patientProfileService.deleteInsurance(id, JwtUtils.extractUserId());
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             log.debug(e.getMessage());

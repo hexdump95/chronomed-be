@@ -19,6 +19,8 @@ public interface PatientProfileService {
 
     void updateInsurance(Long id, String patientId, PatientInsuranceRequest request);
 
+    void deleteInsurance(Long id, String patientId);
+
     List<SelectEntityResponse> getSex();
 
     List<SelectEntityResponse> getSelfPerceivedIdentities();
